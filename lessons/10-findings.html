@@ -65,7 +65,7 @@
       <legend class="q-label">Question 1</legend>
       <p>Why can plain federated learning not give each client a model that fits its own budget?</p>
       <ul class="choices">
-        <li><label><input type="radio" name="f1" value="a"> Because the server averages the clients' copies weight by weight, so every client must hold the same model.</label></li>
+        <li><label><input type="radio" name="f1" value="a"> The server averages the clients' copies parameter by parameter, so every client must hold the same model.</label></li>
         <li><label><input type="radio" name="f1" value="b"> Because federated learning sends the data to the server.</label></li>
         <li><label><input type="radio" name="f1" value="c"> Because clients cannot train on their own data.</label></li>
       </ul>
@@ -75,7 +75,7 @@
       <p>What is a client's sub-network in FedBUD?</p>
       <ul class="choices">
         <li><label><input type="radio" name="f2" value="a"> A new small model trained from scratch.</label></li>
-        <li><label><input type="radio" name="f2" value="b"> The parts of the large model that the client keeps within its budget, with their trained weights.</label></li>
+        <li><label><input type="radio" name="f2" value="b"> The parts of the large model that the client keeps within its budget, with their trained parameter values.</label></li>
         <li><label><input type="radio" name="f2" value="c"> A copy of the large model with fewer layers of text.</label></li>
       </ul>
     </fieldset>

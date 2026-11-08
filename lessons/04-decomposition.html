@@ -55,7 +55,7 @@
         <button class="btn secondary" type="button" id="all-on">Switch every part on</button>
         <button class="btn secondary" type="button" id="retrain">Train a new toy model</button>
       </div>
-      <p class="note">One head costs 256 multiplications per token in this toy layer, and one neuron costs 32. We count the multiplications with the weights only.</p>
+      <p class="note">One head costs 256 multiplications per token in this toy layer, and one neuron costs 32. We count only the multiplications with the parameters.</p>
       <p class="own-result">The accuracies are your own results from this toy model in your browser. They are not results of the paper.</p>
     </div>
   </section>
@@ -97,8 +97,8 @@
     <textarea id="code4" spellcheck="false">import numpy as np
 
 model_width, head_width = 16, 4
-head_cost = 4 * model_width * head_width    # four weight matrices per head
-neuron_cost = 2 * model_width               # one weight in, one weight out per dimension
+head_cost = 4 * model_width * head_width    # four parameter matrices per head
+neuron_cost = 2 * model_width               # one parameter in, one out, per dimension
 
 keep_heads = np.array([1, 1, 0, 0])               # 1 keeps a head, 0 drops it
 keep_neurons = np.array([1] * 8 + [0] * 8)        # 16 neurons

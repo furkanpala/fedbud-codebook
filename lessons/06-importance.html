@@ -25,7 +25,7 @@
 
   <h2>The idea</h2>
   <p>Lesson 4 showed that some heads matter much more than others. Trying every combination of parts is far too slow for a real model, so FedBUD gives every head and every neuron an <span class="term">importance score</span>, a number that estimates how much the part contributes.</p>
-  <p>A head matters if it produces a large output and if the next weights read that output strongly. So the score of a head is the average size of its output over the client's tokens, times the size of the weights that read it. FedBUD builds the score of a feed-forward neuron the same way, from the average size of its activation and the size of the weights that carry it on. FedBUD divides each score by the total of its layer, so the scores of one layer add up to one. It computes all scores in one pass of the large model over 32 of the client's training examples.</p>
+  <p>A head matters if it produces a large output and if the next layer's parameters read that output strongly. So the score of a head is the average size of its output over the client's tokens, times the size of the parameter values that read it. FedBUD builds the score of a feed-forward neuron the same way, from the average size of its activation and the size of the parameter values that carry it on. FedBUD divides each score by the total of its layer, so the scores of one layer add up to one. It computes all scores in one pass of the large model over 32 of the client's training examples.</p>
   <p>Because the scores come from the client's own data, two clients with different data can get different scores, and so different sub-networks under the same budget. When FedBUD halves a block, it keeps the heads or neurons with the highest scores.</p>
 
   <section class="card" aria-labelledby="try6">
@@ -71,15 +71,15 @@
 
   <div class="question" data-kind="choice" data-answer="a">
     <p class="q-label">Question 2</p>
-    <p>Why does the score of a head use both the size of its output and the size of the weights that read it?</p>
+    <p>Why does the score of a head use both the size of its output and the size of the parameter values that read it?</p>
     <ul class="choices">
-      <li><label><input type="radio" name="q2" value="a"> A large output changes little if the next weights read it weakly, so the part matters only when both are large.</label></li>
+      <li><label><input type="radio" name="q2" value="a"> A large output changes little if the next parameter values read it weakly, so the part matters only when both are large.</label></li>
       <li><label><input type="radio" name="q2" value="b"> Two numbers are always more accurate than one.</label></li>
-      <li><label><input type="radio" name="q2" value="c"> The weights tell how fast the head runs on the client's computer.</label></li>
+      <li><label><input type="radio" name="q2" value="c"> The parameter values tell how fast the head runs on the client's computer.</label></li>
     </ul>
     <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
     <p class="feedback" aria-live="polite"></p>
-    <div class="answer" id="a2" tabindex="-1" hidden>The first answer. A part can only change the model's answer if it produces a large output and the next weights pass that output on. The product of the two sizes captures both.</div>
+    <div class="answer" id="a2" tabindex="-1" hidden>The first answer. A part can only change the model's answer if it produces a large output and the next parameter values pass that output on. The product of the two sizes captures both.</div>
   </div>
 
   <div class="question">
@@ -101,7 +101,7 @@ head_outputs = rng.normal(size=(tokens, heads, head_width)) * np.array([1.0, 0.2
 reading_weights = rng.normal(size=(heads, head_width, model_width)) * np.array([0.5, 1.0, 0.8, 0.1])[:, None, None]
 
 output_size = np.abs(head_outputs).sum(axis=2).mean(axis=0)          # average size of each head's output
-weight_size = np.sqrt((reading_weights ** 2).sum(axis=(1, 2)))        # size of the weights that read it
+weight_size = np.sqrt((reading_weights ** 2).sum(axis=(1, 2)))        # size of the parameter values that read it
 score = output_size * weight_size
 score = score / score.sum()                                           # the scores of a layer add up to one
 
@@ -112,7 +112,7 @@ for h in np.argsort(-score):
 
   <section class="summary" aria-labelledby="sum6">
     <h2 id="sum6">Summary</h2>
-    <p>FedBUD scores every head and neuron by how large its output is on the client's data and how strongly the next weights read it, and it divides the scores of a layer by their total. The scores come from one pass over 32 of the client's examples, so they are cheap, and they differ between clients with different data. Inside each block, the sub-network keeps the parts with the highest scores.</p>
+    <p>FedBUD scores every head and neuron by how large its output is on the client's data and how strongly the next parameter values read it, and it divides the scores of a layer by their total. The scores come from one pass over 32 of the client's examples, so they are cheap, and they differ between clients with different data. Inside each block, the sub-network keeps the parts with the highest scores.</p>
   </section>
 
   <nav class="lesson-nav" aria-label="Lessons">

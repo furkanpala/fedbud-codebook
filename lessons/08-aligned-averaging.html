@@ -24,7 +24,7 @@
   <p class="lead">When clients keep different parts, the server must average each part only over the clients that keep it. FedBUD calls this aligned averaging.</p>
 
   <h2>The idea</h2>
-  <p>Each client starts its sub-network from the trained weights of the parts it keeps from the large model, instead of from random numbers. FedBUD calls this <span class="term">weight inheritance</span>. The client then trains a small update on its own data. In the paper this update is a LoRA update, which leaves the inherited weights frozen and trains two small matrices for each weight matrix.</p>
+  <p>FedBUD starts each client's sub-network with <span class="term">weight inheritance</span>, where a new sub-network starts from the trained parameter values of the full model for the parts it keeps, instead of from random numbers. The client then trains a small update on its own data. In the paper this update is a LoRA update, which leaves the inherited parameters frozen and trains two small matrices of parameters for each matrix of the model.</p>
   <p>Federated averaging from Lesson 2 averages the clients' copies position by position. With different sub-networks, this goes wrong. A client that keeps neurons 1, 2, 5 and 6 stores them in rows 1 to 4 of its matrices, while a client that keeps neurons 3, 4, 7 and 8 stores those in its rows 1 to 4. Averaging row 2 of both mixes neuron 2 with neuron 4. <span class="term">Aligned averaging</span> labels every row with the head or neuron it belongs to, and averages each head or neuron only over the clients that keep it. A part that only one client keeps keeps that client's values, and no client receives values for a part it does not have.</p>
 
   <section class="card" aria-labelledby="try8a">
@@ -59,13 +59,13 @@
       <figcaption>Mean accuracy of the three clients' sub-networks on test points from the whole plane, after each round.</figcaption>
     </figure>
     <p aria-live="polite" id="final"></p>
-    <p class="own-result">These accuracies are your own results from a toy network in your browser. The toy averages the weights themselves to keep the picture simple. They are not results of the paper.</p>
+    <p class="own-result">These accuracies are your own results from a toy network in your browser. The toy averages the parameters themselves to keep the picture simple. They are not results of the paper.</p>
   </section>
 
   <h2>Questions</h2>
   <div class="question" data-kind="number" data-answer="0.5" data-tol="0.001">
     <p class="q-label">Question 1</p>
-    <p>Clients A and B keep neuron 5, and client C does not. A holds 100 examples and has the value 0.2 for one weight of neuron 5. B holds 300 examples and has the value 0.6. What value does aligned averaging give?</p>
+    <p>Clients A and B keep neuron 5, and client C does not. A holds 100 examples and has the value 0.2 for one parameter of neuron 5. B holds 300 examples and has the value 0.6. What value does aligned averaging give?</p>
     <div class="btn-row"><label class="sr-only" for="q1">Your answer</label><input id="q1" type="number" step="0.05" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
     <p class="feedback" aria-live="polite"></p>
     <div class="answer" id="a1" tabindex="-1" hidden>0.5, which is (100 × 0.2 + 300 × 0.6) divided by 400. Client C does not count, because it does not keep neuron 5.</div>
@@ -88,7 +88,7 @@
     <p class="q-label">Question 3</p>
     <p>In your run, when is the gap between the two ways of averaging largest, in the first rounds or at the end? Why?</p>
     <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3b">Show the result</button></div>
-    <div class="answer" id="a3b" tabindex="-1" hidden>In most toy runs the gap is largest in the first rounds. Right after the first average, a client that stores its neurons in other rows receives weights that belong partly to other neurons, so it loses part of what it inherited. Local training then repairs some of the damage, and the gap may shrink or even reverse after many rounds. Aligned averaging avoids the damage in the first place.</div>
+    <div class="answer" id="a3b" tabindex="-1" hidden>In most toy runs the gap is largest in the first rounds. Right after the first average, a client that stores its neurons in other rows receives parameter values that belong partly to other neurons, so it loses part of what it inherited. Local training then repairs some of the damage, and the gap may shrink or even reverse after many rounds. Aligned averaging avoids the damage in the first place.</div>
   </div>
 
   <div class="question">
@@ -125,7 +125,7 @@ for r in range(8):
 
   <section class="summary" aria-labelledby="sum8">
     <h2 id="sum8">Summary</h2>
-    <p>Each sub-network inherits the trained weights of the parts it keeps and learns a small update on the client's data. Because clients keep different parts, the server labels every row with its head or neuron and averages each one only over the clients that keep it. When all clients keep the same parts, this is plain federated averaging. In the paper it scored higher than averaging position by position on most datasets, but not when clients held different tasks.</p>
+    <p>Each sub-network inherits the trained parameter values of the parts it keeps and learns a small update on the client's data. Because clients keep different parts, the server labels every row with its head or neuron and averages each one only over the clients that keep it. When all clients keep the same parts, this is plain federated averaging. In the paper it scored higher than averaging position by position on most datasets, but not when clients held different tasks.</p>
   </section>
 
   <nav class="lesson-nav" aria-label="Lessons">
