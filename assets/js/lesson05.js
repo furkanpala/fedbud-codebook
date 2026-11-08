@@ -13,7 +13,7 @@ for (let l = 1; l <= LAYERS; l++) {
   nodes.push({ kind: "attn", label: `Attention ${l}`, layer: l, a: 0 });
   nodes.push({ kind: "ffn", label: `Feed-forward ${l}`, layer: l, a: 0 });
 }
-nodes.push({ kind: "head", label: "Head" });
+nodes.push({ kind: "head", label: "Output head" });
 
 const actions = (n) => (n.kind === "attn" ? ATTN_ACTIONS : FFN_ACTIONS);
 const frac = (n) => (n.kind === "attn" || n.kind === "ffn" ? actions(n)[n.a][1] : 1);

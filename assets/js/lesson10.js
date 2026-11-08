@@ -69,19 +69,24 @@ const KEY = { f1: "a", f2: "b", f3: "c", f4: "a", f5: "b", f6: "c" };
 $("#quiz").addEventListener("submit", (e) => {
   e.preventDefault();
   let right = 0, answered = 0;
-  for (const [name, val] of Object.entries(KEY)) {
+  const wrong = [];
+  Object.entries(KEY).forEach(([name, val], q) => {
     const picked = document.querySelector(`input[name=${name}]:checked`);
     const fs = document.querySelector(`input[name=${name}]`).closest("fieldset");
+    const legend = fs.querySelector("legend");
     fs.style.borderLeftColor = "";
-    if (!picked) continue;
+    legend.textContent = `Question ${q + 1}`;
+    if (!picked) return;
     answered += 1;
     const ok = picked.value === val;
-    if (ok) right += 1;
+    if (ok) right += 1; else wrong.push(q + 1);
     fs.style.borderLeftColor = ok ? "var(--color-good)" : "var(--color-bad)";
-  }
+    legend.textContent = `Question ${q + 1}, ${ok ? "correct" : "check again"}`;
+  });
+  const names = (list) => (list.length === 1 ? `Question ${list[0]} needs` : `Questions ${list.slice(0, -1).join(", ")} and ${list[list.length - 1]} need`);
   const res = $("#quiz-result");
   res.textContent = answered < 6
     ? `You answered ${answered} of 6 questions, ${right} of them correctly. Answer the rest and check again.`
-    : `You answered ${right} of 6 questions correctly.${right === 6 ? " Well done." : " The questions with a red edge need another look."}`;
+    : `You answered ${right} of 6 questions correctly.${right === 6 ? " Well done." : ` ${names(wrong)} another look.`}`;
   res.className = "feedback " + (right === 6 ? "good" : "bad");
 });

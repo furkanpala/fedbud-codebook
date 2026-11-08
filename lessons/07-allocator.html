@@ -25,7 +25,7 @@
 
   <h2>The idea</h2>
   <p>Lesson 6 gave every part a score. The <span class="term">allocator</span> now chooses the configuration, the action of every block, so that the sub-network fits the budget and still works well on the client's data. A simple way is a <span class="term">rule</span> written by hand. The paper tests two such rules. One removes feed-forward neurons first, lowest score first, until the sub-network fits. The other narrows every block by the same share.</p>
-  <p>FedBUD learns the choice instead. Its allocator is a <span class="term">policy</span>, a small network that reads the client's graph from Lesson 5 and gives every block a probability for each action. In each of 40 rounds of the search, the policy draws 8 configurations for the client. A sampled configuration can cost more than the budget, so a <span class="term">budget repair</span> step makes it cheaper, block by block, starting where the policy is most willing to give up, until it fits. The policy then raises the probability of the configurations that did well, and lowers the others. Researchers call this kind of learning from trial and reward <span class="term">reinforcement learning</span>.</p>
+  <p>FedBUD learns the choice instead. Its allocator is a <span class="term">policy</span>, a small network that reads the client's graph from Lesson 5 and gives every block a probability for each action. In each of the 40 iterations of the search, the policy draws 8 configurations for the client. A sampled configuration can cost more than the budget, so a <span class="term">budget repair</span> step makes it cheaper, block by block, starting where the policy is most willing to give up, until it fits. The policy then raises the probability of the configurations that did well, and lowers the others. Researchers call this kind of learning from trial and reward <span class="term">reinforcement learning</span>.</p>
   <p>To judge a configuration properly, FedBUD would train the cut model briefly and test it, which takes about a minute per candidate. Measuring the loss right after cutting takes about two seconds. So the search ranks candidates by the quick loss, corrects it with a small learned formula, and trains and tests only the best candidates. The client then gets the tested configuration with the lowest loss.</p>
 
   <section class="card" aria-labelledby="try7a">
@@ -61,9 +61,9 @@
     <ul>
       <li>the paper's two hand-designed rules, one that removes feed-forward neurons first and one that narrows heads and neurons by the same share,</li>
       <li>random sub-networks at the same budget, averaged over 20 draws,</li>
-      <li>a small learned policy that draws 8 configurations in each of 40 rounds, repairs them to the budget, and learns from their accuracy on separate validation questions.</li>
+      <li>a small learned policy that draws 8 configurations in each of 40 iterations, repairs them to the budget, and learns from their accuracy on separate validation questions.</li>
     </ul>
-    <p class="note">The paper's policy is a graph network that reads the client's graph. The toy policy here gives each part its own probability, because the toy has only one layer.</p>
+    <p class="note">The paper's policy is a network that reads the whole graph of the client. The toy policy here gives each part its own probability, because the toy has only one layer.</p>
     <div class="btn-row"><button class="btn" type="button" id="compare" disabled>Compare the four ways</button></div>
     <p aria-live="polite" id="cmp-status"></p>
     <div class="table-wrap"><table class="data" id="cmp-table" hidden>
@@ -77,7 +77,7 @@
   <h2>Questions</h2>
   <div class="question" data-kind="number" data-answer="320" data-tol="0">
     <p class="q-label">Question 1</p>
-    <p>The policy draws 8 configurations in each of 40 rounds. How many configurations does it draw for one client in a whole search?</p>
+    <p>The policy draws 8 configurations in each of 40 iterations. How many configurations does it draw for one client in a whole search?</p>
     <div class="btn-row"><label class="sr-only" for="q1">Your answer</label><input id="q1" type="number" step="1" inputmode="numeric"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
     <p class="feedback" aria-live="polite"></p>
     <div class="answer" id="a1" tabindex="-1" hidden>320, which is 8 × 40. At about a minute each, training and testing all of them would take more than five hours per client. Ranking them by the quick loss of two seconds takes about ten minutes, which is why FedBUD trains and tests only the best ones.</div>

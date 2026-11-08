@@ -24,7 +24,7 @@
   <p class="lead">FedBUD draws the model as a graph. Each attention block and each feed-forward block is a node, and a client's sub-network is a part of this graph.</p>
 
   <h2>The idea</h2>
-  <p>Every layer of the model has one <span class="term">attention block</span>, which holds all its attention heads, and one <span class="term">feed-forward block</span>, which holds all its feed-forward neurons. FedBUD draws the model as a <span class="term">graph</span> of points, called nodes, joined by lines, called edges. The graph has one node for the embedding, which turns tokens into numbers, one node for each attention block and each feed-forward block, and one node for the head, which turns numbers back into tokens. So a model with L layers has 2L + 2 nodes, in the order in which the model computes.</p>
+  <p>Every layer of the model has one <span class="term">attention block</span>, which holds all its attention heads, and one <span class="term">feed-forward block</span>, which holds all its feed-forward neurons. FedBUD draws the model as a <span class="term">graph</span> of points, called nodes, joined by lines, called edges. The graph has one node for the embedding, which turns tokens into numbers, one node for each attention block and each feed-forward block, and one node for the output head, which turns numbers back into tokens. So a model with L layers has 2L + 2 nodes, in the order in which the model computes.</p>
   <p>Edges join each node to the next node and to the node after that. With these edges, a node sees its neighbors, not only its position in the list. FedBUD then gives every block one <span class="term">action</span>. FedBUD can keep, halve or drop an attention block. It can keep, halve, quarter or drop a feed-forward block. The model skips a dropped block, so the block's input passes on unchanged. The actions of all blocks form the client's <span class="term">configuration</span>, and the kept blocks form the sub-network.</p>
 
   <section class="card" aria-labelledby="try5">
@@ -33,7 +33,7 @@
     <div class="legend">
       <span style="--swatch: #4338ca">attention block</span>
       <span style="--swatch: #0f766e">feed-forward block</span>
-      <span style="--swatch: #9ca3af">embedding and head, never cut</span>
+      <span style="--swatch: #9ca3af">embedding and output head, never cut</span>
     </div>
     <figure>
       <svg class="chart" id="graph" role="group" aria-label="Graph of the model. Each block is a button that changes its action."></svg>
@@ -58,7 +58,7 @@
     <p>A model has 12 layers. How many nodes does its graph have?</p>
     <div class="btn-row"><label class="sr-only" for="q1">Your answer</label><input id="q1" type="number" step="1" inputmode="numeric"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
     <p class="feedback" aria-live="polite"></p>
-    <div class="answer" id="a1" tabindex="-1" hidden>26. Each of the 12 layers gives two nodes, one attention block and one feed-forward block, and the embedding and the head add two more: 2 × 12 + 2 = 26.</div>
+    <div class="answer" id="a1" tabindex="-1" hidden>26. Each of the 12 layers gives two nodes, one attention block and one feed-forward block, and the embedding and the output head add two more: 2 × 12 + 2 = 26.</div>
   </div>
 
   <div class="question" data-kind="choice" data-answer="c">
@@ -87,11 +87,11 @@
     <label class="sr-only" for="code5">Python code</label>
     <textarea id="code5" spellcheck="false">layers = 3
 
-# Nodes in the order the model computes: embedding, then attention and feed-forward per layer, then the head.
+# Nodes in the order the model computes: embedding, then attention and feed-forward per layer, then the output head.
 nodes = ["embedding"]
 for l in range(1, layers + 1):
     nodes += [f"attention {l}", f"feed-forward {l}"]
-nodes.append("head")
+nodes.append("output head")
 
 # Edges join each node to the next node and to the node after that.
 edges = [(i, j) for i in range(len(nodes)) for j in (i + 1, i + 2) if j < len(nodes)]
@@ -105,7 +105,7 @@ for i, j in edges:
 
   <section class="summary" aria-labelledby="sum5">
     <h2 id="sum5">Summary</h2>
-    <p>FedBUD reads the model as a graph with one node per attention block and one per feed-forward block, plus the embedding and the head. Each block gets an action, from keeping it to dropping it, and the actions of all blocks form the client's configuration. Each client gets its own graph, because FedBUD also writes on every node facts about the client, such as its budget and how much each block matters on its data. Lesson 6 shows how FedBUD measures that.</p>
+    <p>FedBUD reads the model as a graph with one node per attention block and one per feed-forward block, plus the embedding and the output head. Each block gets an action, from keeping it to dropping it, and the actions of all blocks form the client's configuration. Each client gets its own graph, because FedBUD also writes on every node facts about the client, such as its budget and how much each block matters on its data. Lesson 6 shows how FedBUD measures that.</p>
   </section>
 
   <nav class="lesson-nav" aria-label="Lessons">

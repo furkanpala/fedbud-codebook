@@ -148,7 +148,8 @@ async function compare() {
   ];
   const results = rows.map(() => []);
   for (const [bi, b] of budgets.entries()) {
-    $("#cmp-status").textContent = `Comparing at a budget of ${fmt(b, 1)}...`;
+    const slow = window.tf.getBackend() !== "webgl" ? " This browser has no graphics acceleration, so the comparison takes longer." : "";
+    $("#cmp-status").textContent = `Comparing at a budget of ${fmt(b, 1)}...${slow}`;
     await new Promise((res) => setTimeout(res, 0));
     for (const [ri, [, fn]] of rows.entries()) {
       let a;

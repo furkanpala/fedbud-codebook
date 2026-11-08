@@ -86,11 +86,12 @@ function draw() {
 
 async function run() {
   $("#run").disabled = true;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   for (let r = hist.aligned.length; r <= 30; r++) {
     for (const k of Object.keys(feds)) { feds[k].round(); hist[k].push([r, feds[k].meanAccuracy()]); }
-    draw();
-    await new Promise((res) => setTimeout(res, 30));
+    if (!reduce) { draw(); await new Promise((res) => setTimeout(res, 30)); }
   }
+  draw();
   const at = (k, r) => fmt(100 * hist[k][r][1], 1) + "%";
   $("#final").textContent = `After 1 round: aligned ${at("aligned", 1)}, position by position ${at("position", 1)}, alone ${at("alone", 1)}. After 30 rounds: aligned ${at("aligned", 30)}, position by position ${at("position", 30)}, alone ${at("alone", 30)}.`;
   $("#run").disabled = false;

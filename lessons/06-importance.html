@@ -25,7 +25,7 @@
 
   <h2>The idea</h2>
   <p>Lesson 4 showed that some heads matter much more than others. Trying every combination of parts is far too slow for a real model, so FedBUD gives every head and every neuron an <span class="term">importance score</span>, a number that estimates how much the part contributes.</p>
-  <p>A head matters if it produces a large output and if the next layer's parameters read that output strongly. So the score of a head is the average size of its output over the client's tokens, times the size of the parameter values that read it. FedBUD builds the score of a feed-forward neuron the same way, from the average size of its activation and the size of the parameter values that carry it on. FedBUD divides each score by the total of its layer, so the scores of one layer add up to one. It computes all scores in one pass of the large model over 32 of the client's training examples.</p>
+  <p>A head matters if it produces a large output and if the next layer's parameters read that output strongly. So the score of a head is the average size of its output over the client's tokens, times the size of the parameter values that read it. FedBUD builds the score of a feed-forward neuron the same way, from the average size of the neuron's output and the size of the parameter values that carry it on. FedBUD divides each score by the total of its layer, so the scores of one layer add up to one. It computes all scores in one pass of the large model over 32 of the client's training examples.</p>
   <p>Because the scores come from the client's own data, two clients with different data can get different scores, and so different sub-networks under the same budget. When FedBUD halves a block, it keeps the heads or neurons with the highest scores.</p>
 
   <section class="card" aria-labelledby="try6">
@@ -98,11 +98,11 @@ rng = np.random.default_rng(0)
 
 tokens, heads, head_width, model_width = 32, 4, 4, 16
 head_outputs = rng.normal(size=(tokens, heads, head_width)) * np.array([1.0, 0.2, 0.6, 0.9])[None, :, None]
-reading_weights = rng.normal(size=(heads, head_width, model_width)) * np.array([0.5, 1.0, 0.8, 0.1])[:, None, None]
+reading_parameters = rng.normal(size=(heads, head_width, model_width)) * np.array([0.5, 1.0, 0.8, 0.1])[:, None, None]
 
 output_size = np.abs(head_outputs).sum(axis=2).mean(axis=0)          # average size of each head's output
-weight_size = np.sqrt((reading_weights ** 2).sum(axis=(1, 2)))        # size of the parameter values that read it
-score = output_size * weight_size
+parameter_size = np.sqrt((reading_parameters ** 2).sum(axis=(1, 2)))        # size of the parameter values that read it
+score = output_size * parameter_size
 score = score / score.sum()                                           # the scores of a layer add up to one
 
 for h in np.argsort(-score):

@@ -10,7 +10,7 @@ Ten lessons and an index. Each lesson explains one idea in plain words, has an i
 - Toy models train in the student's browser: TensorFlow.js 4.22.0 for the small transformer layer (Lessons 4, 6 and 7), plain JavaScript for the other toys.
 - Python cells run in the browser through Pyodide 0.26.4 with NumPy, loaded only when a student presses Run.
 - Libraries load from cdn.jsdelivr.net at pinned versions, and fonts from Google Fonts.
-- Statements about the method and every number in Lesson 10 come from the paper. Numbers that the toy models produce are labeled as the student's own results.
+- Statements about the method and every number in Lessons 9 and 10 come from the paper. The pages label the numbers that the toy models produce as the student's own results.
 
 ## Preview on your computer
 
@@ -18,7 +18,7 @@ Ten lessons and an index. Each lesson explains one idea in plain words, has an i
 python .checks/serve.py 8791
 ```
 
-Then open http://127.0.0.1:8791/. A local server is needed because the pages load JavaScript modules, which browsers block on `file://` pages. (`.checks/` is not published.)
+Then open http://127.0.0.1:8791/. The pages need a local server, because browsers block JavaScript modules on `file://` pages. (`.checks/` is not published.)
 
 ## Publish on GitHub Pages
 
@@ -28,7 +28,9 @@ After pushing this folder to a GitHub repository, enable Pages for the `main` br
 gh api -X POST repos/OWNER/REPO/pages -f "source[branch]=main" -f "source[path]=/"
 ```
 
-The site then appears at `https://OWNER.github.io/REPO/`.
+Or, in the repository's Settings, Pages, choose Deploy from a branch, branch `main`, folder `/ (root)`.
+
+The site appears at `https://OWNER.github.io/REPO/` about a minute after the first deploy.
 
 ## Layout
 

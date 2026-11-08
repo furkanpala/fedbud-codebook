@@ -51,7 +51,7 @@ function draw() {
     { color: on ? "#c2410c" : "#f3c9b0", points: hist.on.map(([r, a]) => [r, 100 * a]), width: on ? 3.5 : 2 },
   ], { xLabel: "round", yLabel: "mean test accuracy, %", yMin: 40, yMax: 100, xMax: 30 });
   $("#acc").textContent = fmt(100 * (on ? finalAcc.on : finalAcc.off), 1) + "%";
-  $("#gates").textContent = on ? gates.map((g) => fmt(g, 2)).join(", ") : "not used";
+  $("#gates").textContent = gates.map((g) => fmt(g, 2)).join(", ");
 }
 
 async function train() {
@@ -66,7 +66,7 @@ async function train() {
   }
   finalAcc = { off: hist.off[30][1], on: hist.on[30][1] };
   gates = on.clients.map((c) => c.film.eta);
-  $("#train-status").textContent = `Done. Without the shared graph network: ${fmt(100 * finalAcc.off, 1)}%. With it: ${fmt(100 * finalAcc.on, 1)}%.`;
+  $("#train-status").textContent = `Done. Without the shared GNN: ${fmt(100 * finalAcc.off, 1)}%. With it: ${fmt(100 * finalAcc.on, 1)}%.`;
   draw();
 }
 

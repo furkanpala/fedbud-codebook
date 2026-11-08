@@ -24,7 +24,7 @@
   <p class="lead">Every number in this lesson comes from the paper. The lesson ends with a quiz on the whole course.</p>
 
   <h2>The experiments</h2>
-  <p>The paper starts from Qwen2.5-0.5B, a language model with about half a billion parameters, and gives each client a budget of 0.6 of the cost of the blocks it can cut. With the head, which no method can cut, this is between 0.68 and 0.71 of the full model's cost per token. The paper runs six experiments.</p>
+  <p>The paper starts from Qwen2.5-0.5B, a language model with about half a billion parameters, and gives each client a budget of 0.6 of the cost of the blocks it can cut. With the output head, which no method can cut, this is between 0.68 and 0.71 of the full model's cost per token. The paper runs six experiments.</p>
   <ul>
     <li><strong>CoNLL-2003</strong>: find the names of people, places and organizations in news text. Three clients.</li>
     <li><strong>SQuAD</strong>: answer a question with a span of a given passage. Three clients.</li>
@@ -38,7 +38,7 @@
   <h2>The findings</h2>
   <p>First, at the same cost per token, the sub-networks that FedBUD trains together scored above the best published method that cuts a model, on six of six datasets. The published methods ran once each, so this comparison has no statistical test.</p>
   <p>Second, training together beat each client training alone on six of six datasets in the mean over three runs. Across the datasets the gain is significant, and it is significant on its own on three of them, SQuAD, SAMSum and the multi-task experiment.</p>
-  <p>Third, aligned averaging scored higher than averaging position by position on five of six datasets in one series of runs, but it raised the loss of the multi-task experiment in both series. Fourth, the allocator's sub-networks beat random sub-networks on five of six datasets and tied on the sixth, while a hand-designed rule did better than the allocator on four of six. Fifth, sharing one sub-network or the importance scores across clients, when the validation data choose it, helped significantly on CoNLL and XSum. Finally, at 0.68 to 0.71 of the cost, the sub-networks scored below the full model fine-tuned on each client's data on all six datasets. That gap is the price of the budget.</p>
+  <p>Third, aligned averaging scored higher than averaging position by position on five of six datasets in one series of runs, but it raised the loss of the multi-task experiment in both series. Fourth, the allocator's sub-networks beat random sub-networks on five of six datasets and tied on the sixth, while a hand-designed rule did better than the allocator on four of six. Fifth, sharing one sub-network or the importance scores across clients, when the validation data choose it, helped significantly on CoNLL and XSum, and did not help on SQuAD. Finally, at 0.68 to 0.71 of the cost, the sub-networks scored below the full model fine-tuned on each client's data on all six datasets. That gap is the price of the budget.</p>
 
   <section class="card" aria-labelledby="try10">
     <h2 class="card-title" id="try10">Explore the numbers</h2>
@@ -131,7 +131,7 @@
   </section>
 
   <nav class="lesson-nav" aria-label="Lessons">
-    <a href="09-shared-gnn.html">Previous: the optional shared graph network</a>
+    <a href="09-shared-gnn.html">Previous: the optional shared graph neural network</a>
     <a href="../index.html">Back to all lessons</a>
   </nav>
 </main>
