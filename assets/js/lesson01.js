@@ -36,6 +36,6 @@ function update() {
   $("#flops-train").textContent = human(6 * b * 1e9);
 }
 
-bindRange($("#size"), $("#size-out"), (v) => fmt(sizeFromSlider(v), sizeFromSlider(v) < 1 ? 2 : 1) + " B", update);
+bindRange($("#size"), $("#size-out"), (v) => fmt(sizeFromSlider(v), sizeFromSlider(v) < 1 ? 2 : 1) + " billion", update);
 $("#gpu").addEventListener("change", update);
 update();

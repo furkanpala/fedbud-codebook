@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6. Importance scores | FedBUD codebook</title>
+<meta name="description" content="How much each head and neuron contributes, measured on the client's own data.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lesson</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="../index.html">FedBUD codebook</a>
+  <span class="lesson-count">Lesson 6 of 10</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">Lesson 6</p>
+  <h1>Importance scores</h1>
+  <p class="lead">Before it cuts, FedBUD measures how much each head and each neuron contributes on the client's own data.</p>
+
+  <h2>The idea</h2>
+  <p>Lesson 4 showed that some heads matter much more than others. Trying every combination of parts is far too slow for a real model, so FedBUD gives every head and every neuron an <span class="term">importance score</span>, a number that estimates how much the part contributes.</p>
+  <p>A head matters if it produces a large output and if the next weights read that output strongly. So the score of a head is the average size of its output over the client's tokens, times the size of the weights that read it. FedBUD builds the score of a feed-forward neuron the same way, from the average size of its activation and the size of the weights that carry it on. FedBUD divides each score by the total of its layer, so the scores of one layer add up to one. It computes all scores in one pass of the large model over 32 of the client's training examples.</p>
+  <p>Because the scores come from the client's own data, two clients with different data can get different scores, and so different sub-networks under the same budget. When FedBUD halves a block, it keeps the heads or neurons with the highest scores.</p>
+
+  <section class="card" aria-labelledby="try6">
+    <h2 class="card-title" id="try6">Try it: score the parts of the toy layer</h2>
+    <p>Your browser trains the toy layer of Lesson 4. Then choose a client and compute the scores on 32 of its examples. Client A's texts can open with any token. Client B's texts open only with tokens 4, 5 and 6.</p>
+    <p id="train-status" aria-live="polite">Preparing the toy model...</p>
+    <div class="meter" aria-hidden="true"><div class="meter-track"><div class="meter-fill" id="train-fill" style="width:0%"></div></div></div>
+    <div id="lab" hidden>
+      <div class="btn-row">
+        <button class="btn" type="button" id="score-a">Compute scores for client A</button>
+        <button class="btn" type="button" id="score-b">Compute scores for client B</button>
+      </div>
+      <p id="which" class="note" aria-live="polite"></p>
+      <p id="agree" aria-live="polite"></p>
+      <figure>
+        <svg class="chart" id="head-chart" role="img" aria-label="Importance score of each head, next to the accuracy each head costs when you remove it"></svg>
+        <figcaption>Blue bars: the importance score of each head. Orange bars: how many accuracy points the client loses when you remove that head alone, scaled to the same height. Hover or focus a bar for its value.</figcaption>
+      </figure>
+      <figure>
+        <svg class="chart" id="neuron-chart" role="img" aria-label="Importance score of each feed-forward neuron"></svg>
+        <figcaption>The importance score of each of the 16 neurons.</figcaption>
+      </figure>
+      <div class="control">
+        <label for="k">Neurons to remove</label>
+        <div class="row"><input type="range" id="k" min="0" max="16" step="1" value="8"><output id="k-out" for="k"></output></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="value" id="acc-low"></div><div class="label">accuracy after removing the neurons with the lowest scores</div></div>
+        <div class="stat"><div class="value" id="acc-rand"></div><div class="label">accuracy after removing random neurons, averaged over 20 draws</div></div>
+      </div>
+      <p class="own-result">These scores and accuracies are your own results from the toy model in your browser. They are not results of the paper.</p>
+    </div>
+  </section>
+
+  <h2>Questions</h2>
+  <div class="question" data-kind="number" data-answer="0.5" data-tol="0.001">
+    <p class="q-label">Question 1</p>
+    <p>A layer has three heads with raw scores 2, 3 and 5. After FedBUD divides each score by the layer total, what is the score of the third head?</p>
+    <div class="btn-row"><label class="sr-only" for="q1">Your answer</label><input id="q1" type="number" step="0.05" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a1" tabindex="-1" hidden>0.5. The layer total is 2 + 3 + 5 = 10, and 5 divided by 10 is 0.5.</div>
+  </div>
+
+  <div class="question" data-kind="choice" data-answer="a">
+    <p class="q-label">Question 2</p>
+    <p>Why does the score of a head use both the size of its output and the size of the weights that read it?</p>
+    <ul class="choices">
+      <li><label><input type="radio" name="q2" value="a"> A large output changes little if the next weights read it weakly, so the part matters only when both are large.</label></li>
+      <li><label><input type="radio" name="q2" value="b"> Two numbers are always more accurate than one.</label></li>
+      <li><label><input type="radio" name="q2" value="c"> The weights tell how fast the head runs on the client's computer.</label></li>
+    </ul>
+    <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a2" tabindex="-1" hidden>The first answer. A part can only change the model's answer if it produces a large output and the next weights pass that output on. The product of the two sizes captures both.</div>
+  </div>
+
+  <div class="question">
+    <p class="q-label">Question 3</p>
+    <p>Compare the blue and the orange bars for the heads, and compare the two accuracies for the neurons. How well do the scores predict which parts matter?</p>
+    <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
+    <div class="answer" id="a3" tabindex="-1" hidden>Only in part. The scores often find the most and the least important heads, but they can swap two heads in the middle, and for the neurons of this toy layer they may do no better than a random choice. A score is a quick estimate from 32 examples and one pass of the model, while the accuracy drop needs a full test for every part. That is why FedBUD uses the scores only to pick which heads and neurons to keep inside a block. How much of each block to keep is a second choice, which FedBUD checks by training and testing candidates, as Lesson 7 shows.</div>
+  </div>
+
+  <h2>Try it in Python</h2>
+  <div class="codecell">
+    <div class="codecell-head"><span class="lang">Python</span><div class="btn-row" style="margin:0"><button class="btn" type="button" data-run>Run</button><button class="btn secondary" type="button" data-reset>Reset</button></div></div>
+    <label class="sr-only" for="code6">Python code</label>
+    <textarea id="code6" spellcheck="false">import numpy as np
+rng = np.random.default_rng(0)
+
+tokens, heads, head_width, model_width = 32, 4, 4, 16
+head_outputs = rng.normal(size=(tokens, heads, head_width)) * np.array([1.0, 0.2, 0.6, 0.9])[None, :, None]
+reading_weights = rng.normal(size=(heads, head_width, model_width)) * np.array([0.5, 1.0, 0.8, 0.1])[:, None, None]
+
+output_size = np.abs(head_outputs).sum(axis=2).mean(axis=0)          # average size of each head's output
+weight_size = np.sqrt((reading_weights ** 2).sum(axis=(1, 2)))        # size of the weights that read it
+score = output_size * weight_size
+score = score / score.sum()                                           # the scores of a layer add up to one
+
+for h in np.argsort(-score):
+    print(f"head {h + 1}: score {score[h]:.2f}")</textarea>
+    <pre class="out" aria-live="polite"></pre>
+  </div>
+
+  <section class="summary" aria-labelledby="sum6">
+    <h2 id="sum6">Summary</h2>
+    <p>FedBUD scores every head and neuron by how large its output is on the client's data and how strongly the next weights read it, and it divides the scores of a layer by their total. The scores come from one pass over 32 of the client's examples, so they are cheap, and they differ between clients with different data. Inside each block, the sub-network keeps the parts with the highest scores.</p>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Lessons">
+    <a href="05-graph.html">Previous: the model as a graph</a>
+    <a href="07-allocator.html">Next: the allocator</a>
+  </nav>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script type="module" src="../assets/js/lesson06.js"></script>
+</body>
+</html>

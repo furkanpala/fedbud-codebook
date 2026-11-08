@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7. The allocator | FedBUD codebook</title>
+<meta name="description" content="Choosing which parts each client keeps under its budget: a simple rule, and the paper's learned policy.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lesson</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="../index.html">FedBUD codebook</a>
+  <span class="lesson-count">Lesson 7 of 10</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">Lesson 7</p>
+  <h1>The allocator: choosing what each client keeps</h1>
+  <p class="lead">The allocator chooses, for each client, how much of every block to keep within the client's budget.</p>
+
+  <h2>The idea</h2>
+  <p>Lesson 6 gave every part a score. The <span class="term">allocator</span> now chooses the configuration, the action of every block, so that the sub-network fits the budget and still works well on the client's data. A simple way is a <span class="term">rule</span> written by hand. The paper tests two such rules. One removes feed-forward neurons first, lowest score first, until the sub-network fits. The other narrows every block by the same share.</p>
+  <p>FedBUD learns the choice instead. Its allocator is a <span class="term">policy</span>, a small network that reads the client's graph from Lesson 5 and gives every block a probability for each action. In each of 40 rounds of the search, the policy draws 8 configurations for the client. A sampled configuration can cost more than the budget, so a <span class="term">budget repair</span> step makes it cheaper, block by block, starting where the policy is most willing to give up, until it fits. The policy then raises the probability of the configurations that did well, and lowers the others. Researchers call this kind of learning from trial and reward <span class="term">reinforcement learning</span>.</p>
+  <p>To judge a configuration properly, FedBUD would train the cut model briefly and test it, which takes about a minute per candidate. Measuring the loss right after cutting takes about two seconds. So the search ranks candidates by the quick loss, corrects it with a small learned formula, and trains and tests only the best candidates. The client then gets the tested configuration with the lowest loss.</p>
+
+  <section class="card" aria-labelledby="try7a">
+    <h2 class="card-title" id="try7a">Try it: be the allocator</h2>
+    <p>Your browser trains the toy layer of Lesson 4 and scores its parts as in Lesson 6. Each part shows its score. Remove parts until the sub-network fits the budget, and try to keep the accuracy high. Then let the feed-forward-first rule do the same and compare.</p>
+    <p id="train-status" aria-live="polite">Preparing the toy model...</p>
+    <div class="meter" aria-hidden="true"><div class="meter-track"><div class="meter-fill" id="train-fill" style="width:0%"></div></div></div>
+    <div id="lab" hidden>
+      <div class="control">
+        <label for="budget">The client's budget</label>
+        <div class="row"><input type="range" id="budget" min="0.3" max="0.9" step="0.05" value="0.6"><output id="budget-out" for="budget"></output></div>
+      </div>
+      <div class="toggle-grid" id="parts" role="group" aria-label="Parts of the layer with their scores. Press a part to remove it or bring it back."></div>
+      <div class="meter">
+        <div class="meter-label"><span>Cost of the sub-network</span><span id="cost-txt"></span></div>
+        <div class="meter-track"><div class="meter-fill" id="cost-fill"></div><div class="meter-limit" id="budget-lim" aria-hidden="true"></div></div>
+      </div>
+      <p aria-live="polite" id="step-note"></p>
+      <div class="stats">
+        <div class="stat"><div class="value" id="acc"></div><div class="label">accuracy of your sub-network</div></div>
+        <div class="stat"><div class="value" id="acc-rule"></div><div class="label">accuracy of the feed-forward-first rule at the same budget</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn secondary" type="button" id="show-rule">Show the rule's choice</button>
+        <button class="btn secondary" type="button" id="restart">Keep every part</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="try7b">
+    <h2 class="card-title" id="try7b">Try it: compare four ways to choose, at three budgets</h2>
+    <p>Press the button to compare, at budgets of 0.4, 0.6 and 0.8:</p>
+    <ul>
+      <li>the paper's two hand-designed rules, one that removes feed-forward neurons first and one that narrows heads and neurons by the same share,</li>
+      <li>random sub-networks at the same budget, averaged over 20 draws,</li>
+      <li>a small learned policy that draws 8 configurations in each of 40 rounds, repairs them to the budget, and learns from their accuracy on separate validation questions.</li>
+    </ul>
+    <p class="note">The paper's policy is a graph network that reads the client's graph. The toy policy here gives each part its own probability, because the toy has only one layer.</p>
+    <div class="btn-row"><button class="btn" type="button" id="compare" disabled>Compare the four ways</button></div>
+    <p aria-live="polite" id="cmp-status"></p>
+    <div class="table-wrap"><table class="data" id="cmp-table" hidden>
+      <caption class="sr-only">Test accuracy of each way to choose, at three budgets</caption>
+      <thead><tr><th scope="col">Way to choose</th><th scope="col">Budget 0.4</th><th scope="col">Budget 0.6</th><th scope="col">Budget 0.8</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p class="own-result">These accuracies are your own results from the toy model in your browser. They are not results of the paper.</p>
+  </section>
+
+  <h2>Questions</h2>
+  <div class="question" data-kind="number" data-answer="320" data-tol="0">
+    <p class="q-label">Question 1</p>
+    <p>The policy draws 8 configurations in each of 40 rounds. How many configurations does it draw for one client in a whole search?</p>
+    <div class="btn-row"><label class="sr-only" for="q1">Your answer</label><input id="q1" type="number" step="1" inputmode="numeric"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a1" tabindex="-1" hidden>320, which is 8 × 40. At about a minute each, training and testing all of them would take more than five hours per client. Ranking them by the quick loss of two seconds takes about ten minutes, which is why FedBUD trains and tests only the best ones.</div>
+  </div>
+
+  <div class="question" data-kind="choice" data-answer="b">
+    <p class="q-label">Question 2</p>
+    <p>A sampled configuration costs 0.7 and the client's budget is 0.6. What does FedBUD do with it?</p>
+    <ul class="choices">
+      <li><label><input type="radio" name="q2" value="a"> It throws the configuration away and draws a new one.</label></li>
+      <li><label><input type="radio" name="q2" value="b"> It makes the configuration cheaper, block by block, where the policy is most willing to give up, until the cost fits the budget.</label></li>
+      <li><label><input type="radio" name="q2" value="c"> It accepts the configuration, because 0.7 is close to 0.6.</label></li>
+    </ul>
+    <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a2" tabindex="-1" hidden>The second answer. The budget repair keeps every configuration within the budget, so the budget is a hard limit and not a wish.</div>
+  </div>
+
+  <div class="question">
+    <p class="q-label">Question 3</p>
+    <p>Look at your table. Does the learned policy always beat the hand-designed rules? Does any way beat random sub-networks?</p>
+    <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
+    <div class="answer" id="a3" tabindex="-1" hidden>Your toy table may differ from run to run. In the paper, against random sub-networks at the same budget, the sub-networks FedBUD selected scored higher on five of six datasets and equal on the sixth, so the choice of parts matters. Against the hand-designed rules, the better rule scored higher than the selected sub-networks on four of six datasets. So a simple rule on the same importance scores can replace the learned search, and the paper says so.</div>
+  </div>
+
+  <h2>Try it in Python</h2>
+  <div class="codecell">
+    <div class="codecell-head"><span class="lang">Python</span><div class="btn-row" style="margin:0"><button class="btn" type="button" data-run>Run</button><button class="btn secondary" type="button" data-reset>Reset</button></div></div>
+    <label class="sr-only" for="code7">Python code</label>
+    <textarea id="code7" spellcheck="false">import numpy as np
+
+# Toy parts: 4 heads, then 16 neurons, with their costs and importance scores.
+cost = np.array([256] * 4 + [32] * 16, dtype=float)
+score = np.array([0.23, 0.29, 0.29, 0.19] + list(np.linspace(0.11, 0.02, 16)))
+budget = 0.6
+
+# The feed-forward-first rule: neurons first, lowest score first, then heads; keep at least one head.
+order = sorted(range(4, 20), key=lambda i: score[i]) + sorted(range(4), key=lambda i: score[i])
+keep = np.ones(20, dtype=bool)
+for i in order:
+    if cost[keep].sum() / cost.sum() <= budget:
+        break
+    if i < 4 and keep[:4].sum() == 1:
+        continue
+    keep[i] = False
+    print("remove", f"head {i + 1}" if i < 4 else f"neuron {i - 3}")
+
+print("cost:", round(cost[keep].sum() / cost.sum(), 2))</textarea>
+    <pre class="out" aria-live="polite"></pre>
+  </div>
+
+  <section class="summary" aria-labelledby="sum7">
+    <h2 id="sum7">Summary</h2>
+    <p>The allocator chooses, for each client, how much of every block to keep within the budget. FedBUD learns this choice with a policy that reads the client's graph, draws configurations, repairs them to the budget and rewards the good ones. It ranks candidates by a quick loss and trains and tests only the best. In the paper, its choices beat random sub-networks, while a simple rule on the same scores did as well or better on most datasets.</p>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Lessons">
+    <a href="06-importance.html">Previous: importance scores</a>
+    <a href="08-aligned-averaging.html">Next: training together</a>
+  </nav>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script type="module" src="../assets/js/lesson07.js"></script>
+</body>
+</html>

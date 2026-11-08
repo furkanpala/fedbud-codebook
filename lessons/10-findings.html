@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10. What the paper found | FedBUD codebook</title>
+<meta name="description" content="The six experiments of the FedBUD paper in plain words, and a final quiz.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lesson</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="../index.html">FedBUD codebook</a>
+  <span class="lesson-count">Lesson 10 of 10</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">Lesson 10</p>
+  <h1>What the paper found</h1>
+  <p class="lead">Every number in this lesson comes from the paper. The lesson ends with a quiz on the whole course.</p>
+
+  <h2>The experiments</h2>
+  <p>The paper starts from Qwen2.5-0.5B, a language model with about half a billion parameters, and gives each client a budget of 0.6 of the cost of the blocks it can cut. With the head, which no method can cut, this is between 0.68 and 0.71 of the full model's cost per token. The paper runs six experiments.</p>
+  <ul>
+    <li><strong>CoNLL-2003</strong>: find the names of people, places and organizations in news text. Three clients.</li>
+    <li><strong>SQuAD</strong>: answer a question with a span of a given passage. Three clients.</li>
+    <li><strong>AG News</strong>: sort news articles by topic. Three clients.</li>
+    <li><strong>XSum</strong>: summarize a news article in one sentence. Three clients.</li>
+    <li><strong>SAMSum</strong>: summarize a chat conversation. Three clients.</li>
+    <li><strong>Multi-task</strong>: four clients, each with a different task.</li>
+  </ul>
+  <p>In every experiment the clients hold unequal shares of the data with different mixes of labels, topics or tasks. The paper compares FedBUD with published methods that cut a model to the same budget, with a client that trains alone, and with the full model fine-tuned on each client's data.</p>
+
+  <h2>The findings</h2>
+  <p>First, at the same cost per token, the sub-networks that FedBUD trains together scored above the best published method that cuts a model, on six of six datasets. The published methods ran once each, so this comparison has no statistical test.</p>
+  <p>Second, training together beat each client training alone on six of six datasets in the mean over three runs. Across the datasets the gain is significant, and it is significant on its own on three of them, SQuAD, SAMSum and the multi-task experiment.</p>
+  <p>Third, aligned averaging scored higher than averaging position by position on five of six datasets in one series of runs, but it raised the loss of the multi-task experiment in both series. Fourth, the allocator's sub-networks beat random sub-networks on five of six datasets and tied on the sixth, while a hand-designed rule did better than the allocator on four of six. Fifth, sharing one sub-network or the importance scores across clients, when the validation data choose it, helped significantly on CoNLL and XSum. Finally, at 0.68 to 0.71 of the cost, the sub-networks scored below the full model fine-tuned on each client's data on all six datasets. That gap is the price of the budget.</p>
+
+  <section class="card" aria-labelledby="try10">
+    <h2 class="card-title" id="try10">Explore the numbers</h2>
+    <p>Choose a comparison. A bar above zero means FedBUD scored higher. The multi-task experiment reports a loss, where lower is better, so we turn its sign.</p>
+    <div class="btn-row" role="group" aria-label="Comparison">
+      <button class="btn" type="button" id="cmp-base" aria-pressed="true">Against the best published method</button>
+      <button class="btn secondary" type="button" id="cmp-alone" aria-pressed="false">Against training alone</button>
+    </div>
+    <figure>
+      <svg class="chart" id="chart" role="img" aria-label="FedBUD minus the comparison, for six datasets"></svg>
+      <figcaption id="chart-cap"></figcaption>
+    </figure>
+    <div class="table-wrap"><table class="data">
+      <caption class="sr-only">Scores behind the chart</caption>
+      <thead><tr><th scope="col">Dataset and score</th><th scope="col" id="th-other">Comparison</th><th scope="col">FedBUD</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </section>
+
+  <h2>Final quiz</h2>
+  <p>Six questions on the whole course. Answer them all, then press <strong>Check my answers</strong>.</p>
+  <form id="quiz" novalidate>
+    <fieldset class="question">
+      <legend class="q-label">Question 1</legend>
+      <p>Why can plain federated learning not give each client a model that fits its own budget?</p>
+      <ul class="choices">
+        <li><label><input type="radio" name="f1" value="a"> Because the server averages the clients' copies weight by weight, so every client must hold the same model.</label></li>
+        <li><label><input type="radio" name="f1" value="b"> Because federated learning sends the data to the server.</label></li>
+        <li><label><input type="radio" name="f1" value="c"> Because clients cannot train on their own data.</label></li>
+      </ul>
+    </fieldset>
+    <fieldset class="question">
+      <legend class="q-label">Question 2</legend>
+      <p>What is a client's sub-network in FedBUD?</p>
+      <ul class="choices">
+        <li><label><input type="radio" name="f2" value="a"> A new small model trained from scratch.</label></li>
+        <li><label><input type="radio" name="f2" value="b"> The parts of the large model that the client keeps within its budget, with their trained weights.</label></li>
+        <li><label><input type="radio" name="f2" value="c"> A copy of the large model with fewer layers of text.</label></li>
+      </ul>
+    </fieldset>
+    <fieldset class="question">
+      <legend class="q-label">Question 3</legend>
+      <p>On which data does FedBUD compute a client's importance scores?</p>
+      <ul class="choices">
+        <li><label><input type="radio" name="f3" value="a"> On public text, the same for every client.</label></li>
+        <li><label><input type="radio" name="f3" value="b"> On the server's own data.</label></li>
+        <li><label><input type="radio" name="f3" value="c"> On 32 of the client's own training examples, so clients with different data can get different scores.</label></li>
+      </ul>
+    </fieldset>
+    <fieldset class="question">
+      <legend class="q-label">Question 4</legend>
+      <p>The policy draws a configuration that costs more than the budget. What happens?</p>
+      <ul class="choices">
+        <li><label><input type="radio" name="f4" value="a"> The budget repair makes it cheaper, block by block, until it fits.</label></li>
+        <li><label><input type="radio" name="f4" value="b"> The client gets a larger budget.</label></li>
+        <li><label><input type="radio" name="f4" value="c"> FedBUD uses the configuration anyway.</label></li>
+      </ul>
+    </fieldset>
+    <fieldset class="question">
+      <legend class="q-label">Question 5</legend>
+      <p>Why does FedBUD average each head and neuron only over the clients that keep it?</p>
+      <ul class="choices">
+        <li><label><input type="radio" name="f5" value="a"> Because it is faster to compute.</label></li>
+        <li><label><input type="radio" name="f5" value="b"> Because averaging position by position would mix the updates of different heads and neurons.</label></li>
+        <li><label><input type="radio" name="f5" value="c"> Because the server cannot store all parts.</label></li>
+      </ul>
+    </fieldset>
+    <fieldset class="question">
+      <legend class="q-label">Question 6</legend>
+      <p>The gate of the optional shared GNN starts at zero. Why?</p>
+      <ul class="choices">
+        <li><label><input type="radio" name="f6" value="a"> So that the GNN never changes anything.</label></li>
+        <li><label><input type="radio" name="f6" value="b"> So that the GNN trains faster.</label></li>
+        <li><label><input type="radio" name="f6" value="c"> So that training starts from aligned averaging alone, and each client uses the GNN only as far as its own training finds it useful.</label></li>
+      </ul>
+    </fieldset>
+    <div class="btn-row">
+      <button class="btn" type="submit">Check my answers</button>
+      <button class="btn secondary" type="button" data-reveal="quiz-answers">Show all answers</button>
+    </div>
+    <p class="feedback" id="quiz-result" aria-live="polite"></p>
+    <div class="answer" id="quiz-answers" tabindex="-1" hidden>
+      <p>1: the first answer (Lesson 2). 2: the second (Lesson 4). 3: the third (Lesson 6). 4: the first (Lesson 7). 5: the second (Lesson 8). 6: the third (Lesson 9).</p>
+    </div>
+  </form>
+
+  <section class="summary" aria-labelledby="sum10">
+    <h2 id="sum10">Summary of the course</h2>
+    <p>Clients such as hospitals and small companies cannot train a large language model alone, and they must keep their data private. FedBUD reads the large model as a graph, scores its parts on each client's data, and lets a learned allocator cut one sub-network per client within the client's budget. The clients then train their sub-networks together with aligned averaging, without sharing data. In the paper, this beat the published methods that cut a model to the same budget and beat training alone on all six datasets, while staying below the full model that the clients could not afford. The paper names its limits plainly. It tested one budget, one model of half a billion parameters, and three or four clients.</p>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Lessons">
+    <a href="09-shared-gnn.html">Previous: the optional shared graph network</a>
+    <a href="../index.html">Back to all lessons</a>
+  </nav>
+</main>
+<script type="module" src="../assets/js/lesson10.js"></script>
+</body>
+</html>

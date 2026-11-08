@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8. Training together | FedBUD codebook</title>
+<meta name="description" content="Aligned averaging: average each part only over the clients that keep it.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lesson</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="../index.html">FedBUD codebook</a>
+  <span class="lesson-count">Lesson 8 of 10</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">Lesson 8</p>
+  <h1>Training together with different sub-networks</h1>
+  <p class="lead">When clients keep different parts, the server must average each part only over the clients that keep it. FedBUD calls this aligned averaging.</p>
+
+  <h2>The idea</h2>
+  <p>Each client starts its sub-network from the trained weights of the parts it keeps from the large model, instead of from random numbers. FedBUD calls this <span class="term">weight inheritance</span>. The client then trains a small update on its own data. In the paper this update is a LoRA update, which leaves the inherited weights frozen and trains two small matrices for each weight matrix.</p>
+  <p>Federated averaging from Lesson 2 averages the clients' copies position by position. With different sub-networks, this goes wrong. A client that keeps neurons 1, 2, 5 and 6 stores them in rows 1 to 4 of its matrices, while a client that keeps neurons 3, 4, 7 and 8 stores those in its rows 1 to 4. Averaging row 2 of both mixes neuron 2 with neuron 4. <span class="term">Aligned averaging</span> labels every row with the head or neuron it belongs to, and averages each head or neuron only over the clients that keep it. A part that only one client keeps keeps that client's values, and no client receives values for a part it does not have.</p>
+
+  <section class="card" aria-labelledby="try8a">
+    <h2 class="card-title" id="try8a">Try it: which rows does the server average together?</h2>
+    <p>Three clients keep different neurons of one layer with 8 neurons. Choose a rule, then select a row to see what gets mixed.</p>
+    <div class="btn-row" role="group" aria-label="Averaging rule">
+      <button class="btn" type="button" id="view-pos" aria-pressed="true">Position by position</button>
+      <button class="btn secondary" type="button" id="view-aln" aria-pressed="false">Aligned</button>
+    </div>
+    <figure>
+      <svg class="chart" id="rows" role="group" aria-label="Rows of the three clients' matrices"></svg>
+      <figcaption id="rows-caption">Each column is a client, each box a stored row, and the number in a box is the neuron that the row belongs to.</figcaption>
+    </figure>
+    <p aria-live="polite" id="row-note" class="note">Select a row.</p>
+  </section>
+
+  <section class="card" aria-labelledby="try8b">
+    <h2 class="card-title" id="try8b">Try it: train three clients together</h2>
+    <p>The three clients train a small network with 8 hidden neurons on their own points. Each client holds points of only part of the plane, and each keeps the neurons shown above. As in the paper, every client inherits its neurons from one network that learned a related task before, so each neuron already has a role. Run rounds and compare the two ways of averaging, and training alone. Watch the first rounds closely.</p>
+    <div class="legend">
+      <span style="--swatch: #4338ca">aligned averaging</span>
+      <span style="--swatch: #c2410c">position by position</span>
+      <span style="--swatch: #6b7280">each client alone</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn" type="button" id="run">Run 30 rounds</button>
+      <button class="btn secondary" type="button" id="reset">Start again</button>
+      <button class="btn secondary" type="button" id="new-data">Try new toy data</button>
+    </div>
+    <figure>
+      <svg class="chart" id="curve" role="img" aria-label="Mean test accuracy of the three clients after each round, for the two ways of averaging and for training alone"></svg>
+      <figcaption>Mean accuracy of the three clients' sub-networks on test points from the whole plane, after each round.</figcaption>
+    </figure>
+    <p aria-live="polite" id="final"></p>
+    <p class="own-result">These accuracies are your own results from a toy network in your browser. The toy averages the weights themselves to keep the picture simple. They are not results of the paper.</p>
+  </section>
+
+  <h2>Questions</h2>
+  <div class="question" data-kind="number" data-answer="0.5" data-tol="0.001">
+    <p class="q-label">Question 1</p>
+    <p>Clients A and B keep neuron 5, and client C does not. A holds 100 examples and has the value 0.2 for one weight of neuron 5. B holds 300 examples and has the value 0.6. What value does aligned averaging give?</p>
+    <div class="btn-row"><label class="sr-only" for="q1">Your answer</label><input id="q1" type="number" step="0.05" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a1" tabindex="-1" hidden>0.5, which is (100 × 0.2 + 300 × 0.6) divided by 400. Client C does not count, because it does not keep neuron 5.</div>
+  </div>
+
+  <div class="question" data-kind="choice" data-answer="b">
+    <p class="q-label">Question 2</p>
+    <p>Client A keeps all 8 neurons, client B keeps neurons 1, 2, 5 and 6, and client C keeps neurons 3, 4, 7 and 8. Position by position, the server averages row 2 of all three clients. Which neurons does it mix?</p>
+    <ul class="choices">
+      <li><label><input type="radio" name="q2" value="a"> Only neuron 2</label></li>
+      <li><label><input type="radio" name="q2" value="b"> Neuron 2 of clients A and B with neuron 4 of client C</label></li>
+      <li><label><input type="radio" name="q2" value="c"> Neurons 2, 5 and 8</label></li>
+    </ul>
+    <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a2" tabindex="-1" hidden>Neuron 2 of A and B with neuron 4 of C, because C stores neuron 4 in its second row. Client C then receives back an average that partly belongs to another neuron.</div>
+  </div>
+
+  <div class="question">
+    <p class="q-label">Question 3</p>
+    <p>In your run, when is the gap between the two ways of averaging largest, in the first rounds or at the end? Why?</p>
+    <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3b">Show the result</button></div>
+    <div class="answer" id="a3b" tabindex="-1" hidden>In most toy runs the gap is largest in the first rounds. Right after the first average, a client that stores its neurons in other rows receives weights that belong partly to other neurons, so it loses part of what it inherited. Local training then repairs some of the damage, and the gap may shrink or even reverse after many rounds. Aligned averaging avoids the damage in the first place.</div>
+  </div>
+
+  <div class="question">
+    <p class="q-label">Question 4</p>
+    <p>What does aligned averaging do when every client keeps the same parts? And did it help in the paper?</p>
+    <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
+    <div class="answer" id="a3" tabindex="-1" hidden>When every client keeps the same parts, aligned averaging is plain federated averaging. In the paper, against averaging position by position, FedBUD scored higher on five of six datasets in one series of runs. On the federation where four clients hold four different tasks, it raised the loss in both series. With one run per setting, the paper could not establish an effect, so it calls this result partial support and advises testing aligned averaging first when clients hold different tasks.</div>
+  </div>
+
+  <h2>Try it in Python</h2>
+  <div class="codecell">
+    <div class="codecell-head"><span class="lang">Python</span><div class="btn-row" style="margin:0"><button class="btn" type="button" data-run>Run</button><button class="btn secondary" type="button" data-reset>Reset</button></div></div>
+    <label class="sr-only" for="code8">Python code</label>
+    <textarea id="code8" spellcheck="false">import numpy as np
+
+kept = {"A": [1, 2, 3, 4, 5, 6, 7, 8], "B": [1, 2, 5, 6], "C": [3, 4, 7, 8]}
+examples = {"A": 150, "B": 100, "C": 100}
+# Each client stores one value per kept neuron, in the order of its kept list.
+rows = {k: np.array(v, dtype=float) * 0.1 + i for i, (k, v) in enumerate(kept.items())}
+
+aligned = {}
+for neuron in range(1, 9):
+    owners = [k for k in kept if neuron in kept[k]]
+    total = sum(examples[k] for k in owners)
+    aligned[neuron] = sum(examples[k] * rows[k][kept[k].index(neuron)] for k in owners) / total
+    print(f"neuron {neuron}: averaged over {owners} -> {aligned[neuron]:.2f}")
+
+for r in range(8):
+    owners = [k for k in kept if r < len(kept[k])]
+    mixed = [kept[k][r] for k in owners]
+    print(f"row {r + 1} position by position mixes neurons {mixed}")</textarea>
+    <pre class="out" aria-live="polite"></pre>
+  </div>
+
+  <section class="summary" aria-labelledby="sum8">
+    <h2 id="sum8">Summary</h2>
+    <p>Each sub-network inherits the trained weights of the parts it keeps and learns a small update on the client's data. Because clients keep different parts, the server labels every row with its head or neuron and averages each one only over the clients that keep it. When all clients keep the same parts, this is plain federated averaging. In the paper it scored higher than averaging position by position on most datasets, but not when clients held different tasks.</p>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Lessons">
+    <a href="07-allocator.html">Previous: the allocator</a>
+    <a href="09-shared-gnn.html">Next: the optional shared graph network</a>
+  </nav>
+</main>
+<script type="module" src="../assets/js/lesson08.js"></script>
+</body>
+</html>

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3. Why one model does not fit all | FedBUD codebook</title>
 <meta name="description" content="Each client has its own compute budget, so one shared model wastes or exceeds most budgets.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
@@ -20,7 +21,7 @@
 <main id="main">
   <p class="kicker">Lesson 3</p>
   <h1>Why one model does not fit all</h1>
-  <p class="lead">Each client can spend a different amount of computation. One shared model must fit the weakest client, and the other clients then leave most of their budget unused.</p>
+  <p class="lead">Each client can spend a different amount of computation. One shared model must fit the client with the smallest budget, and the other clients then leave most of their budget unused.</p>
 
   <h2>The idea</h2>
   <p>A language model reads text as <span class="term">tokens</span>, short pieces of words. Every token costs computation. A client's <span class="term">budget</span> is the share of the full model's cost per token that the client can spend. A hospital with a server may afford most of the full cost. A clinic with a laptop may afford a small share.</p>
@@ -63,7 +64,7 @@
     <p class="q-label">Question 3</p>
     <p>What would you give each client instead of one shared model?</p>
     <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
-    <div class="answer" id="a3" tabindex="-1" hidden>Each client could get its own model, cut from the same large model to fit its own budget. The hospital would keep most of the large model and the clinic a small part. Lesson 4 shows how to cut such a model, and Lesson 8 shows how the clients can still train together when their models differ.</div>
+    <div class="answer" id="a3" tabindex="-1" hidden>Each client could get its own sub-network, a part of one large model sized to its budget. The hospital would keep most of the large model and the clinic a small part. Lesson 4 shows how to cut such a model, and Lesson 8 shows how the clients can still train together when their models differ.</div>
   </div>
 
   <h2>Try it in Python</h2>
@@ -86,7 +87,7 @@ for name, budget in budgets.items():
 
   <section class="summary" aria-labelledby="sum3">
     <h2 id="sum3">Summary</h2>
-    <p>Clients differ in how much computation they can spend on each token. One shared model must fit the smallest budget, so the clients with larger budgets leave much of it unused. The answer of the FedBUD paper is to give each client its own part of one large model, sized to the client's budget. An open question is how to choose that part for each client and how to train the different parts together without sharing data.</p>
+    <p>Clients differ in how much computation they can spend on each token. One shared model must fit the smallest budget, so the clients with larger budgets leave much of it unused. The answer of the FedBUD paper is to give each client its own sub-network, a part of one large model sized to the client's budget. An open question is how to choose that part for each client and how to train the different parts together without sharing data.</p>
   </section>
 
   <nav class="lesson-nav" aria-label="Lessons">

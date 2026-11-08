@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>2. Federated learning | FedBUD codebook</title>
 <meta name="description" content="Federated learning in two minutes: clients train, a server averages.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
@@ -24,8 +25,8 @@
 
   <h2>The idea</h2>
   <p><span class="term">Federated learning (FL)</span> trains one model across many clients without moving their data. Training runs in <span class="term">rounds</span>, and every round has three steps.</p>
-  <p>First, the server sends the current shared model to every client. Then each client trains its copy for a few steps on its own data. Finally, the server averages the clients' copies into the next shared model. A client with more examples counts more in this average. This rule is called <span class="term">federated averaging</span>.</p>
-  <p>Only model weights travel between the clients and the server. The data stay where they are.</p>
+  <p>First, the server sends the current shared model to every client. Then each client trains its copy for a few steps on its own data. Finally, the server averages the clients' copies into the next shared model. A client with more examples counts more in this average, a rule named <span class="term">federated averaging</span>.</p>
+  <p>Only the model's parameters travel between the clients and the server. The data stay where they are.</p>
 
   <section class="card" aria-labelledby="try2">
     <h2 class="card-title" id="try2">Try it: three clients learn one boundary</h2>
@@ -37,7 +38,7 @@
     </div>
     <figure>
       <canvas id="plane" width="640" height="360" role="img" aria-label="Points of three clients and the boundary line of the shared model"></canvas>
-      <figcaption>Filled circles and hollow squares are the two kinds of points, colored by client. The black line is the shared model after the current round.</figcaption>
+      <figcaption>Filled circles and hollow squares are the two kinds of points. Client 1 is blue, client 2 orange and client 3 green. The black line is the shared model after the current round.</figcaption>
     </figure>
     <div class="control">
       <label for="steps">Training steps on each client per round</label>
@@ -62,17 +63,17 @@
     <p>What travels from a client to the server in one round?</p>
     <ul class="choices">
       <li><label><input type="radio" name="q1" value="a"> The client's data points</label></li>
-      <li><label><input type="radio" name="q1" value="b"> The weights of the client's trained copy of the model</label></li>
+      <li><label><input type="radio" name="q1" value="b"> The parameters of the client's trained copy of the model</label></li>
       <li><label><input type="radio" name="q1" value="c"> Nothing, the server guesses the model</label></li>
     </ul>
     <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
     <p class="feedback" aria-live="polite"></p>
-    <div class="answer" id="a1" tabindex="-1" hidden>The weights. The server never sees a data point. This is why clinics and companies can take part without breaking privacy rules.</div>
+    <div class="answer" id="a1" tabindex="-1" hidden>The parameters. The server never sees a data point. This is why clinics and companies can take part without breaking privacy rules.</div>
   </div>
 
   <div class="question" data-kind="number" data-answer="2.5" data-tol="0.01">
     <p class="q-label">Question 2</p>
-    <p>Three clients hold 100, 300 and 600 examples. After training, one weight of their copies has the values 1.0, 2.0 and 3.0. What value does federated averaging give for this weight?</p>
+    <p>Three clients hold 100, 300 and 600 examples. After training, one parameter of their copies has the values 1.0, 2.0 and 3.0. What value does federated averaging give for this parameter?</p>
     <div class="btn-row"><label class="sr-only" for="q2">Your answer</label><input id="q2" type="number" step="0.1" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
     <p class="feedback" aria-live="polite"></p>
     <div class="answer" id="a2" tabindex="-1" hidden>2.5. The weighted average is (100 × 1.0 + 300 × 2.0 + 600 × 3.0) divided by 1,000, which is 2,500 divided by 1,000.</div>
@@ -82,17 +83,17 @@
     <p class="q-label">Question 3</p>
     <p>Set the slider to one training step per round, run 20 rounds, and compare with 30 steps per round. Which setting reaches a good line in fewer rounds, and what could go wrong with many steps?</p>
     <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
-    <div class="answer" id="a3" tabindex="-1" hidden>More steps per round usually reach a good line in fewer rounds, because each client learns more before the server averages. With many steps, each client moves toward the points it holds, so the copies drift apart and their average can be worse than any single round suggests. Real systems balance the two.</div>
+    <div class="answer" id="a3" tabindex="-1" hidden>More steps per round usually reach a good line in fewer rounds, because each client learns more before the server averages. With many steps, each client moves toward the points it holds, so the copies drift apart, and their average can be worse than each copy on its own client's points. Real systems balance the two.</div>
   </div>
 
   <h2>Try it in Python</h2>
-  <p>Federated averaging fits in a few lines. Change the client sizes or the weights and press Run.</p>
+  <p>Federated averaging fits in a few lines. Change the client sizes or the parameters and press Run.</p>
   <div class="codecell">
     <div class="codecell-head"><span class="lang">Python</span><div class="btn-row" style="margin:0"><button class="btn" type="button" data-run>Run</button><button class="btn secondary" type="button" data-reset>Reset</button></div></div>
     <label class="sr-only" for="code2">Python code</label>
     <textarea id="code2" spellcheck="false">import numpy as np
 
-# The trained copies of three clients, each with three weights.
+# The trained copies of three clients, each with three parameters.
 copies = np.array([
     [1.0, 0.5, -0.2],
     [2.0, 0.1,  0.4],
@@ -109,7 +110,7 @@ print("shared model:", shared_model)</textarea>
 
   <section class="summary" aria-labelledby="sum2">
     <h2 id="sum2">Summary</h2>
-    <p>In federated learning, clients train copies of one model on their own data, and a server averages the copies every round. The clients learn together while their data stay private. Federated averaging has one requirement that matters for the rest of this course. Every client must hold the same model, so that the server can average the copies weight by weight.</p>
+    <p>In federated learning, clients train copies of one model on their own data, and a server averages the copies every round. The clients learn together while their data stay private. Federated averaging has one requirement that matters for the rest of this course. Every client must hold the same model, so that the server can average the copies parameter by parameter.</p>
   </section>
 
   <nav class="lesson-nav" aria-label="Lessons">

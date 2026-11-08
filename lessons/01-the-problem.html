@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>1. The problem | FedBUD codebook</title>
 <meta name="description" content="Why hospitals and small companies cannot train a large language model alone.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
@@ -23,9 +24,9 @@
   <p class="lead">Large language models need a lot of computation and data to train. Hospitals and small companies have little of both, and they must keep their data private.</p>
 
   <h2>The idea</h2>
-  <p>A <span class="term">large language model (LLM)</span> is a network that reads and writes text. It learns from examples by adjusting its <span class="term">parameters</span>, the numbers inside the network. A larger model has more parameters, so it needs more memory to store them and more computation to use them.</p>
-  <p>Think of a district hospital that wants a model to find drug names in its clinical notes. It owns one graphics card and a few thousand notes. In this course we call such an organization a <span class="term">client</span>. The client cannot train a large model alone, because the model does not fit on its graphics card and a few thousand notes are too few. It also must not send its notes to a server outside the hospital, because the notes belong to its patients.</p>
-  <p>The FedBUD paper starts from Qwen2.5-0.5B, a language model with about half a billion parameters. Use the slider below to see how memory grows with model size, against the memory of one graphics card.</p>
+  <p>A <span class="term">large language model (LLM)</span> is a network that reads and writes text. It learns from examples by changing its <span class="term">parameters</span>, the numbers inside the network. A larger model has more parameters, so it needs more memory to store them and more computation to use them.</p>
+  <p>Think of a district hospital that wants a model to find drug names in its clinical notes. Such an organization, a <span class="term">client</span>, owns one graphics card and a few thousand notes. The client cannot train a large model alone. A model of a few billion parameters does not fit on its graphics card, and even the half-billion model of the paper costs computation for every token it reads, more than the clinic can spend, while its few thousand notes are too few to train it well. It also must not send its notes to a server outside the hospital, because the notes belong to its patients.</p>
+  <p>The FedBUD paper starts from Qwen2.5-0.5B, a language model with about half a billion parameters. To <span class="term">fine-tune</span> a model is to continue training it on the client's own notes. Use the slider below to see how memory grows with model size, against the memory of one graphics card.</p>
 
   <section class="card" aria-labelledby="try1">
     <h2 class="card-title" id="try1">Try it: does the model fit?</h2>
@@ -36,7 +37,7 @@
     <div class="control">
       <label for="gpu">Memory of the client's graphics card</label>
       <div class="row">
-        <select id="gpu" style="font:inherit;min-height:44px;padding:0 8px;border-radius:8px;border:1px solid var(--color-border)">
+        <select id="gpu" class="select">
           <option value="8">8 GB, a laptop</option>
           <option value="16" selected>16 GB, a workstation</option>
           <option value="24">24 GB, a strong workstation</option>
@@ -57,7 +58,7 @@
       <div class="stat"><div class="value" id="flops"></div><div class="label">operations per token to run the model, about 2 per parameter</div></div>
       <div class="stat"><div class="value" id="flops-train"></div><div class="label">operations per token to train it, about 6 per parameter</div></div>
     </div>
-    <p class="note">The orange line marks the memory of the chosen card. The byte counts are common rules of thumb for half-precision weights and for training with the Adam optimizer. Real numbers also depend on the text length and the software.</p>
+    <p class="note">The orange line marks the memory of the chosen card. The byte counts are common rules of thumb. Real numbers also depend on the text length and the software.</p>
   </section>
 
   <h2>Questions</h2>
@@ -66,7 +67,7 @@
     <p>A clinic has one graphics card with 16 GB of memory. With the rule of 16 bytes per parameter, what is the largest model it can fine-tune in full? Give the size in billions of parameters.</p>
     <div class="btn-row"><label class="sr-only" for="q1">Your answer in billions of parameters</label><input id="q1" type="number" step="0.1" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
     <p class="feedback" aria-live="polite"></p>
-    <div class="answer" id="a1" tabindex="-1" hidden>About 1 billion parameters, because 16 GB divided by 16 bytes per parameter is 1 billion. The clinic can fine-tune the half-billion model of the paper, but not a model of 7 billion parameters.</div>
+    <div class="answer" id="a1" tabindex="-1" hidden>About 1 billion parameters, because 16 GB divided by 16 bytes per parameter is 1 billion. The clinic can fine-tune the half-billion model of the paper, but not a model of 7 billion parameters. Memory is only the first limit. Lesson 3 shows the second, the computation each token costs.</div>
   </div>
 
   <div class="question" data-kind="choice" data-answer="b">

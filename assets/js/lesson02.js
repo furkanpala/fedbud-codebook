@@ -13,7 +13,7 @@ function makeClient(id, n0, n1, shift) {
   return pts;
 }
 
-const clients = [makeClient(0, 68, 12, 0), makeClient(1, 12, 68, 0), makeClient(2, 34, 6, 0.6)];
+const clients = [makeClient(0, 76, 4, 0), makeClient(1, 4, 76, 0), makeClient(2, 34, 6, 0.6)];
 const allPoints = clients.flat();
 
 const sigmoid = (z) => 1 / (1 + Math.exp(-z));

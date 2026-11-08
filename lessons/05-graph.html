@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5. The model as a graph | FedBUD codebook</title>
+<meta name="description" content="FedBUD reads the model as a graph with one node per attention block and one per feed-forward block.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lesson</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="../index.html">FedBUD codebook</a>
+  <span class="lesson-count">Lesson 5 of 10</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">Lesson 5</p>
+  <h1>The model as a graph</h1>
+  <p class="lead">FedBUD draws the model as a graph. Each attention block and each feed-forward block is a node, and a client's sub-network is a part of this graph.</p>
+
+  <h2>The idea</h2>
+  <p>Every layer of the model has one <span class="term">attention block</span>, which holds all its attention heads, and one <span class="term">feed-forward block</span>, which holds all its feed-forward neurons. FedBUD draws the model as a <span class="term">graph</span> of points, called nodes, joined by lines, called edges. The graph has one node for the embedding, which turns tokens into numbers, one node for each attention block and each feed-forward block, and one node for the head, which turns numbers back into tokens. So a model with L layers has 2L + 2 nodes, in the order in which the model computes.</p>
+  <p>Edges join each node to the next node and to the node after that. With these edges, a node sees its neighbors, not only its position in the list. FedBUD then gives every block one <span class="term">action</span>. FedBUD can keep, halve or drop an attention block. It can keep, halve, quarter or drop a feed-forward block. The model skips a dropped block, so the block's input passes on unchanged. The actions of all blocks form the client's <span class="term">configuration</span>, and the kept blocks form the sub-network.</p>
+
+  <section class="card" aria-labelledby="try5">
+    <h2 class="card-title" id="try5">Try it: pick an action for each block</h2>
+    <p>The graph shows a small model with 6 layers. Select a block to change its action. In this small model a feed-forward block costs twice as much as an attention block. FedBUD requires at least one attention block, so you cannot drop the last one.</p>
+    <div class="legend">
+      <span style="--swatch: #4338ca">attention block</span>
+      <span style="--swatch: #0f766e">feed-forward block</span>
+      <span style="--swatch: #9ca3af">embedding and head, never cut</span>
+    </div>
+    <figure>
+      <svg class="chart" id="graph" role="group" aria-label="Graph of the model. Each block is a button that changes its action."></svg>
+      <figcaption>A darker node keeps more of its block. A dashed node shows a dropped block, and the dashed edges show where the text skips it.</figcaption>
+    </figure>
+    <p aria-live="polite" id="picked" class="note">Select a block to see its features.</p>
+    <div class="control">
+      <label for="budget">The client's budget</label>
+      <div class="row"><input type="range" id="budget" min="0.2" max="1" step="0.05" value="0.6"><output id="budget-out" for="budget"></output></div>
+    </div>
+    <div class="meter">
+      <div class="meter-label"><span>Cost of the configuration, against the full model</span><span id="cost-txt"></span></div>
+      <div class="meter-track"><div class="meter-fill" id="cost-fill"></div><div class="meter-limit" id="budget-lim" aria-hidden="true"></div></div>
+    </div>
+    <p>Within the budget: <span id="fit" class="status"></span></p>
+    <div class="btn-row"><button class="btn secondary" type="button" id="reset">Keep every block</button></div>
+  </section>
+
+  <h2>Questions</h2>
+  <div class="question" data-kind="number" data-answer="26" data-tol="0">
+    <p class="q-label">Question 1</p>
+    <p>A model has 12 layers. How many nodes does its graph have?</p>
+    <div class="btn-row"><label class="sr-only" for="q1">Your answer</label><input id="q1" type="number" step="1" inputmode="numeric"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a1" tabindex="-1" hidden>26. Each of the 12 layers gives two nodes, one attention block and one feed-forward block, and the embedding and the head add two more: 2 × 12 + 2 = 26.</div>
+  </div>
+
+  <div class="question" data-kind="choice" data-answer="c">
+    <p class="q-label">Question 2</p>
+    <p>What happens to the text when FedBUD drops a block?</p>
+    <ul class="choices">
+      <li><label><input type="radio" name="q2" value="a"> The model stops, because a block is missing.</label></li>
+      <li><label><input type="radio" name="q2" value="b"> A new, untrained block takes its place.</label></li>
+      <li><label><input type="radio" name="q2" value="c"> The model skips the block, and the block's input passes on unchanged to the next block.</label></li>
+    </ul>
+    <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a2" tabindex="-1" hidden>The model skips the block. Every block adds its result to the text it receives, so without the block the text passes on unchanged. This is why every configuration still runs as it is.</div>
+  </div>
+
+  <div class="question">
+    <p class="q-label">Question 3</p>
+    <p>Why does FedBUD also join each node to the node two steps ahead, and not only to the next one?</p>
+    <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
+    <div class="answer" id="a3" tabindex="-1" hidden>With these extra edges, each node sees more of its neighborhood. The algorithm that reads the graph can then judge a block by the blocks around it, not only by its place in the list. Lesson 7 shows this algorithm.</div>
+  </div>
+
+  <h2>Try it in Python</h2>
+  <div class="codecell">
+    <div class="codecell-head"><span class="lang">Python</span><div class="btn-row" style="margin:0"><button class="btn" type="button" data-run>Run</button><button class="btn secondary" type="button" data-reset>Reset</button></div></div>
+    <label class="sr-only" for="code5">Python code</label>
+    <textarea id="code5" spellcheck="false">layers = 3
+
+# Nodes in the order the model computes: embedding, then attention and feed-forward per layer, then the head.
+nodes = ["embedding"]
+for l in range(1, layers + 1):
+    nodes += [f"attention {l}", f"feed-forward {l}"]
+nodes.append("head")
+
+# Edges join each node to the next node and to the node after that.
+edges = [(i, j) for i in range(len(nodes)) for j in (i + 1, i + 2) if j < len(nodes)]
+
+print(len(nodes), "nodes:", nodes)
+print(len(edges), "edges:")
+for i, j in edges:
+    print(f"  {nodes[i]} -> {nodes[j]}")</textarea>
+    <pre class="out" aria-live="polite"></pre>
+  </div>
+
+  <section class="summary" aria-labelledby="sum5">
+    <h2 id="sum5">Summary</h2>
+    <p>FedBUD reads the model as a graph with one node per attention block and one per feed-forward block, plus the embedding and the head. Each block gets an action, from keeping it to dropping it, and the actions of all blocks form the client's configuration. Each client gets its own graph, because FedBUD also writes on every node facts about the client, such as its budget and how much each block matters on its data. Lesson 6 shows how FedBUD measures that.</p>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Lessons">
+    <a href="04-decomposition.html">Previous: the decomposition idea</a>
+    <a href="06-importance.html">Next: importance scores</a>
+  </nav>
+</main>
+<script type="module" src="../assets/js/lesson05.js"></script>
+</body>
+</html>
