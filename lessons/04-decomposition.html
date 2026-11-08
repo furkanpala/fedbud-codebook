@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4. The decomposition idea | FedBUD codebook</title>
+<meta name="description" content="Keep for each client only the parts of the model it can afford: a sub-network.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lesson</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="../index.html">FedBUD codebook</a>
+  <span class="lesson-count">Lesson 4 of 10</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">Lesson 4</p>
+  <h1>The decomposition idea</h1>
+  <p class="lead">Keep for each client only the parts of the large model that fit its budget. The kept parts form the client's sub-network.</p>
+
+  <h2>The idea</h2>
+  <p>A language model is a stack of <span class="term">layers</span>. Each layer has two kinds of parts. <span class="term">Attention heads</span> let each token look at the other tokens of the text and collect what it needs from them. <span class="term">Feed-forward neurons</span> then transform each token on its own.</p>
+  <p>Every head and every neuron costs computation for each token. If a client drops some heads and some neurons, the remaining model is cheaper. FedBUD calls the remaining model the client's <span class="term">sub-network</span>, and it calls the cutting of one large model into one sub-network per client <span class="term">decomposition</span>. The hard part is to drop parts so that the sub-network still works well.</p>
+
+  <section class="card" aria-labelledby="try4">
+    <h2 class="card-title" id="try4">Try it: cut a small transformer layer</h2>
+    <p>Your browser trains a tiny model with one layer of 4 heads and 16 neurons. Its task is simple. It reads 8 tokens and answers whether the first token appears again later. The model needs its heads to compare the first token with the others. Switch parts off and watch the cost and the accuracy.</p>
+    <p id="train-status" aria-live="polite">Preparing the toy model...</p>
+    <div class="meter" aria-hidden="true"><div class="meter-track"><div class="meter-fill" id="train-fill" style="width:0%"></div></div></div>
+
+    <div id="lab" hidden>
+      <h3>Attention heads</h3>
+      <div class="toggle-grid" id="heads" role="group" aria-label="Attention heads, press to switch a head on or off"></div>
+      <h3>Feed-forward neurons</h3>
+      <div class="toggle-grid" id="neurons" role="group" aria-label="Feed-forward neurons, press to switch a neuron on or off"></div>
+      <div class="control">
+        <label for="budget">The client's budget</label>
+        <div class="row"><input type="range" id="budget" min="0.2" max="1" step="0.05" value="0.6"><output id="budget-out" for="budget"></output></div>
+      </div>
+      <div class="meter">
+        <div class="meter-label"><span>Cost of the sub-network per token, against the full layer</span><span id="cost-txt"></span></div>
+        <div class="meter-track"><div class="meter-fill" id="cost-fill"></div><div class="meter-limit" id="budget-lim" aria-hidden="true"></div></div>
+      </div>
+      <p>Within the budget: <span id="fit" class="status"></span></p>
+      <div class="stats">
+        <div class="stat"><div class="value" id="acc-full"></div><div class="label">accuracy of the full layer</div></div>
+        <div class="stat"><div class="value" id="acc-sub"></div><div class="label">accuracy of your sub-network</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn secondary" type="button" id="all-on">Switch every part on</button>
+        <button class="btn secondary" type="button" id="retrain">Train a new toy model</button>
+      </div>
+      <p class="note">One head costs 256 multiplications per token in this toy layer, and one neuron costs 32. We count the multiplications with the weights only.</p>
+      <p class="own-result">The accuracies are your own results from this toy model in your browser. They are not results of the paper.</p>
+    </div>
+  </section>
+
+  <h2>Questions</h2>
+  <div class="question" data-kind="number" data-answer="0.5" data-tol="0.001">
+    <p class="q-label">Question 1</p>
+    <p>In the toy layer, one head costs 256 multiplications per token and one neuron costs 32. The full layer has 4 heads and 16 neurons. What is the cost of a sub-network that keeps 2 heads and 8 neurons, as a fraction of the full layer?</p>
+    <div class="btn-row"><label class="sr-only" for="q1">Your answer</label><input id="q1" type="number" step="0.05" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a1" tabindex="-1" hidden>0.5. The full layer costs 4 × 256 + 16 × 32 = 1,536. The sub-network costs 2 × 256 + 8 × 32 = 768, which is half.</div>
+  </div>
+
+  <div class="question" data-kind="choice" data-answer="a">
+    <p class="q-label">Question 2</p>
+    <p>Switch off one head at a time and note the accuracy. Do all heads matter equally?</p>
+    <ul class="choices">
+      <li><label><input type="radio" name="q2" value="a"> No. Some heads matter much more than others for this task.</label></li>
+      <li><label><input type="radio" name="q2" value="b"> Yes. Every head changes the accuracy by the same amount.</label></li>
+      <li><label><input type="radio" name="q2" value="c"> No head matters, because the neurons do all the work.</label></li>
+    </ul>
+    <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a2" tabindex="-1" hidden>In most toy models, some heads matter much more than others. Dropping an important head costs a lot of accuracy, while dropping another costs almost nothing. So a good sub-network keeps the important parts. Lesson 6 shows how FedBUD measures how important each part is.</div>
+  </div>
+
+  <div class="question">
+    <p class="q-label">Question 3</p>
+    <p>Set the budget to 0.6. Find the most accurate sub-network you can within that budget. Which parts did you keep, and how far below the full layer is it?</p>
+    <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
+    <div class="answer" id="a3" tabindex="-1" hidden>The answer depends on the toy model your browser trained. A good sub-network keeps the heads that matter most and drops the parts that matter least for their cost. One head costs as much as eight neurons, so dropping a weak head frees a lot of budget. Finding the best choice by hand takes many tries even for one small layer. A real model has many layers, so FedBUD makes this choice with an algorithm, as Lesson 7 shows.</div>
+  </div>
+
+  <h2>Try it in Python</h2>
+  <p>The cost of a sub-network is the sum of the costs of its kept parts. Change the kept parts and press Run.</p>
+  <div class="codecell">
+    <div class="codecell-head"><span class="lang">Python</span><div class="btn-row" style="margin:0"><button class="btn" type="button" data-run>Run</button><button class="btn secondary" type="button" data-reset>Reset</button></div></div>
+    <label class="sr-only" for="code4">Python code</label>
+    <textarea id="code4" spellcheck="false">import numpy as np
+
+model_width, head_width = 16, 4
+head_cost = 4 * model_width * head_width    # four weight matrices per head
+neuron_cost = 2 * model_width               # one weight in, one weight out per dimension
+
+keep_heads = np.array([1, 1, 0, 0])               # 1 keeps a head, 0 drops it
+keep_neurons = np.array([1] * 8 + [0] * 8)        # 16 neurons
+
+full = 4 * head_cost + 16 * neuron_cost
+cost = keep_heads.sum() * head_cost + keep_neurons.sum() * neuron_cost
+print("relative cost of the sub-network:", cost / full)
+print("within a budget of 0.6:", cost / full <= 0.6)</textarea>
+    <pre class="out" aria-live="polite"></pre>
+  </div>
+
+  <section class="summary" aria-labelledby="sum4">
+    <h2 id="sum4">Summary</h2>
+    <p>Decomposition keeps, for each client, only some heads and neurons of the large model, so that the client's sub-network fits its budget. Parts differ in cost and in how much they matter, so the choice of parts decides how well the sub-network works. FedBUD makes this choice per client, on the client's own data, as the next lessons show.</p>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Lessons">
+    <a href="03-one-size.html">Previous: why one model does not fit all</a>
+    <a href="05-graph.html">Next: the model as a graph</a>
+  </nav>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script type="module" src="../assets/js/lesson04.js"></script>
+</body>
+</html>

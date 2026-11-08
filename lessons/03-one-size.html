@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3. Why one model does not fit all | FedBUD codebook</title>
+<meta name="description" content="Each client has its own compute budget, so one shared model wastes or exceeds most budgets.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lesson</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="../index.html">FedBUD codebook</a>
+  <span class="lesson-count">Lesson 3 of 10</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">Lesson 3</p>
+  <h1>Why one model does not fit all</h1>
+  <p class="lead">Each client can spend a different amount of computation. One shared model must fit the weakest client, and the other clients then leave most of their budget unused.</p>
+
+  <h2>The idea</h2>
+  <p>A language model reads text as <span class="term">tokens</span>, short pieces of words. Every token costs computation. A client's <span class="term">budget</span> is the share of the full model's cost per token that the client can spend. A hospital with a server may afford most of the full cost. A clinic with a laptop may afford a small share.</p>
+  <p>Lesson 2 showed that federated averaging needs every client to hold the same model. So in plain federated learning, the shared model must be cheap enough for the client with the smallest budget. The other clients could run a larger, better model, but they do not get one.</p>
+
+  <section class="card" aria-labelledby="try3">
+    <h2 class="card-title" id="try3">Try it: one shared model for three budgets</h2>
+    <p>Set each client's budget, then choose the cost of one shared model. A cost of 1.0 is the full model.</p>
+    <div class="control"><label for="b1">Budget of the university hospital</label><div class="row"><input type="range" id="b1" min="0.1" max="1" step="0.05" value="0.9"><output id="b1-out" for="b1"></output></div></div>
+    <div class="control"><label for="b2">Budget of the small company</label><div class="row"><input type="range" id="b2" min="0.1" max="1" step="0.05" value="0.6"><output id="b2-out" for="b2"></output></div></div>
+    <div class="control"><label for="b3">Budget of the rural clinic</label><div class="row"><input type="range" id="b3" min="0.1" max="1" step="0.05" value="0.3"><output id="b3-out" for="b3"></output></div></div>
+    <div class="control"><label for="shared">Cost of the one shared model</label><div class="row"><input type="range" id="shared" min="0.1" max="1" step="0.05" value="0.6"><output id="shared-out" for="shared"></output></div></div>
+    <div id="rows"></div>
+    <div class="stats">
+      <div class="stat"><div class="value" id="able"></div><div class="label">clients that can run the shared model</div></div>
+      <div class="stat"><div class="value" id="unused"></div><div class="label">budget left unused by the clients that can run it, on average</div></div>
+    </div>
+    <div class="btn-row"><button class="btn secondary" type="button" id="fit">Set the shared model to the largest cost that every client can run</button></div>
+    <p class="note" aria-live="polite" id="fit-note"></p>
+  </section>
+
+  <h2>Questions</h2>
+  <div class="question" data-kind="number" data-answer="0.3" data-tol="0.001">
+    <p class="q-label">Question 1</p>
+    <p>Three clients have budgets of 0.3, 0.6 and 0.9. What is the largest cost of one shared model that all three can run?</p>
+    <div class="btn-row"><label class="sr-only" for="q1">Your answer</label><input id="q1" type="number" step="0.05" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a1" tabindex="-1" hidden>0.3, the smallest budget. A larger model would not run on the rural clinic's computer.</div>
+  </div>
+
+  <div class="question" data-kind="number" data-answer="0.67" data-tol="0.01">
+    <p class="q-label">Question 2</p>
+    <p>With that shared model of cost 0.3, what fraction of its budget does the hospital with a budget of 0.9 leave unused? Give a number between 0 and 1.</p>
+    <div class="btn-row"><label class="sr-only" for="q2">Your answer</label><input id="q2" type="number" step="0.01" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a2" tabindex="-1" hidden>About 0.67. The hospital uses 0.3 of its 0.9, so it leaves 0.6 of 0.9 unused, which is two thirds of its budget.</div>
+  </div>
+
+  <div class="question">
+    <p class="q-label">Question 3</p>
+    <p>What would you give each client instead of one shared model?</p>
+    <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
+    <div class="answer" id="a3" tabindex="-1" hidden>Each client could get its own model, cut from the same large model to fit its own budget. The hospital would keep most of the large model and the clinic a small part. Lesson 4 shows how to cut such a model, and Lesson 8 shows how the clients can still train together when their models differ.</div>
+  </div>
+
+  <h2>Try it in Python</h2>
+  <div class="codecell">
+    <div class="codecell-head"><span class="lang">Python</span><div class="btn-row" style="margin:0"><button class="btn" type="button" data-run>Run</button><button class="btn secondary" type="button" data-reset>Reset</button></div></div>
+    <label class="sr-only" for="code3">Python code</label>
+    <textarea id="code3" spellcheck="false">budgets = {"hospital": 0.9, "company": 0.6, "clinic": 0.3}
+
+shared_cost = min(budgets.values())     # one model must fit the smallest budget
+print("cost of the one shared model:", shared_cost)
+for name, budget in budgets.items():
+    unused = (budget - shared_cost) / budget
+    print(f"{name:>8}: budget {budget:.2f}, leaves {unused:.0%} of it unused")
+
+# With one model per client, every client can spend its full budget:
+for name, budget in budgets.items():
+    print(f"{name:>8}: own model of cost {budget:.2f}, leaves 0% unused")</textarea>
+    <pre class="out" aria-live="polite"></pre>
+  </div>
+
+  <section class="summary" aria-labelledby="sum3">
+    <h2 id="sum3">Summary</h2>
+    <p>Clients differ in how much computation they can spend on each token. One shared model must fit the smallest budget, so the clients with larger budgets leave much of it unused. The answer of the FedBUD paper is to give each client its own part of one large model, sized to the client's budget. An open question is how to choose that part for each client and how to train the different parts together without sharing data.</p>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Lessons">
+    <a href="02-federated-learning.html">Previous: federated learning</a>
+    <a href="04-decomposition.html">Next: the decomposition idea</a>
+  </nav>
+</main>
+<script type="module" src="../assets/js/lesson03.js"></script>
+</body>
+</html>

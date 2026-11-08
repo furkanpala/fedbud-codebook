@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. Federated learning | FedBUD codebook</title>
+<meta name="description" content="Federated learning in two minutes: clients train, a server averages.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lesson</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="../index.html">FedBUD codebook</a>
+  <span class="lesson-count">Lesson 2 of 10</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">Lesson 2</p>
+  <h1>Federated learning in two minutes</h1>
+  <p class="lead">Clients train on their own data, and a server averages what they learned. No data leave a client.</p>
+
+  <h2>The idea</h2>
+  <p><span class="term">Federated learning (FL)</span> trains one model across many clients without moving their data. Training runs in <span class="term">rounds</span>, and every round has three steps.</p>
+  <p>First, the server sends the current shared model to every client. Then each client trains its copy for a few steps on its own data. Finally, the server averages the clients' copies into the next shared model. A client with more examples counts more in this average. This rule is called <span class="term">federated averaging</span>.</p>
+  <p>Only model weights travel between the clients and the server. The data stay where they are.</p>
+
+  <section class="card" aria-labelledby="try2">
+    <h2 class="card-title" id="try2">Try it: three clients learn one boundary</h2>
+    <p>Three clients hold points of two kinds, circles and squares. Each client holds mostly one kind, so no client sees the full picture. The shared model is a straight line that should separate the two kinds. Run rounds and watch the line and the accuracy.</p>
+    <div class="legend">
+      <span style="--swatch: var(--client-1)">Client 1</span>
+      <span style="--swatch: var(--client-2)">Client 2</span>
+      <span style="--swatch: var(--client-3)">Client 3</span>
+    </div>
+    <figure>
+      <canvas id="plane" width="640" height="360" role="img" aria-label="Points of three clients and the boundary line of the shared model"></canvas>
+      <figcaption>Filled circles and hollow squares are the two kinds of points, colored by client. The black line is the shared model after the current round.</figcaption>
+    </figure>
+    <div class="control">
+      <label for="steps">Training steps on each client per round</label>
+      <div class="row"><input type="range" id="steps" min="1" max="30" step="1" value="5"><output id="steps-out" for="steps"></output></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" type="button" id="one">Run one round</button>
+      <button class="btn" type="button" id="play">Run 20 rounds</button>
+      <button class="btn secondary" type="button" id="reset">Start again</button>
+    </div>
+    <p aria-live="polite">Round <strong id="round">0</strong>. Accuracy of the shared model on all points: <strong id="acc">50.0%</strong></p>
+    <figure>
+      <svg class="chart" id="curve" role="img" aria-label="Accuracy of the shared model after each round, against each client trained alone"></svg>
+      <figcaption>Solid line: accuracy of the shared model on the points of all three clients. Dashed lines: a model that each client trains alone for the same number of steps, scored on the same points.</figcaption>
+    </figure>
+    <p class="own-result">These numbers are your own results from this toy example in your browser. They are not results of the paper.</p>
+  </section>
+
+  <h2>Questions</h2>
+  <div class="question" data-kind="choice" data-answer="b">
+    <p class="q-label">Question 1</p>
+    <p>What travels from a client to the server in one round?</p>
+    <ul class="choices">
+      <li><label><input type="radio" name="q1" value="a"> The client's data points</label></li>
+      <li><label><input type="radio" name="q1" value="b"> The weights of the client's trained copy of the model</label></li>
+      <li><label><input type="radio" name="q1" value="c"> Nothing, the server guesses the model</label></li>
+    </ul>
+    <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a1" tabindex="-1" hidden>The weights. The server never sees a data point. This is why clinics and companies can take part without breaking privacy rules.</div>
+  </div>
+
+  <div class="question" data-kind="number" data-answer="2.5" data-tol="0.01">
+    <p class="q-label">Question 2</p>
+    <p>Three clients hold 100, 300 and 600 examples. After training, one weight of their copies has the values 1.0, 2.0 and 3.0. What value does federated averaging give for this weight?</p>
+    <div class="btn-row"><label class="sr-only" for="q2">Your answer</label><input id="q2" type="number" step="0.1" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a2" tabindex="-1" hidden>2.5. The weighted average is (100 × 1.0 + 300 × 2.0 + 600 × 3.0) divided by 1,000, which is 2,500 divided by 1,000.</div>
+  </div>
+
+  <div class="question">
+    <p class="q-label">Question 3</p>
+    <p>Set the slider to one training step per round, run 20 rounds, and compare with 30 steps per round. Which setting reaches a good line in fewer rounds, and what could go wrong with many steps?</p>
+    <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
+    <div class="answer" id="a3" tabindex="-1" hidden>More steps per round usually reach a good line in fewer rounds, because each client learns more before the server averages. With many steps, each client moves toward the points it holds, so the copies drift apart and their average can be worse than any single round suggests. Real systems balance the two.</div>
+  </div>
+
+  <h2>Try it in Python</h2>
+  <p>Federated averaging fits in a few lines. Change the client sizes or the weights and press Run.</p>
+  <div class="codecell">
+    <div class="codecell-head"><span class="lang">Python</span><div class="btn-row" style="margin:0"><button class="btn" type="button" data-run>Run</button><button class="btn secondary" type="button" data-reset>Reset</button></div></div>
+    <label class="sr-only" for="code2">Python code</label>
+    <textarea id="code2" spellcheck="false">import numpy as np
+
+# The trained copies of three clients, each with three weights.
+copies = np.array([
+    [1.0, 0.5, -0.2],
+    [2.0, 0.1,  0.4],
+    [3.0, 0.3,  0.0],
+])
+examples = np.array([100, 300, 600])   # how many examples each client holds
+
+share = examples / examples.sum()       # each client's share of the average
+shared_model = share @ copies           # federated averaging
+print("shares:", share)
+print("shared model:", shared_model)</textarea>
+    <pre class="out" aria-live="polite"></pre>
+  </div>
+
+  <section class="summary" aria-labelledby="sum2">
+    <h2 id="sum2">Summary</h2>
+    <p>In federated learning, clients train copies of one model on their own data, and a server averages the copies every round. The clients learn together while their data stay private. Federated averaging has one requirement that matters for the rest of this course. Every client must hold the same model, so that the server can average the copies weight by weight.</p>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Lessons">
+    <a href="01-the-problem.html">Previous: the problem</a>
+    <a href="03-one-size.html">Next: why one model does not fit all</a>
+  </nav>
+</main>
+<script type="module" src="../assets/js/lesson02.js"></script>
+</body>
+</html>

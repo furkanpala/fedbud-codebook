@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FedBUD codebook: one large model in small pieces</title>
+<meta name="description" content="An interactive course on federated budgeted decomposition (FedBUD): how clients with small budgets train parts of one large language model together without sharing data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lessons</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="index.html">FedBUD codebook</a>
+  <span class="lesson-count">10 lessons, about 90 minutes</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">An interactive course</p>
+  <h1>One large model, cut into pieces that small clients can train together</h1>
+  <p class="lead">Hospitals and small companies cannot train a large language model alone, and they must keep their data private. This course explains, step by step, how federated budgeted decomposition (FedBUD) gives each of them a part of one large model that fits its budget, and how they train these parts together.</p>
+
+  <section class="card" aria-labelledby="how">
+    <h2 class="card-title" id="how">How to use this course</h2>
+    <p>Each lesson explains one idea in plain words, lets you try it, asks one to three questions, and ends with a short summary. Try to answer each question before you press <strong>Show the result</strong>.</p>
+    <p>Everything runs in your browser. The small models train on your own computer in a few seconds, and the Python cells run through Pyodide, a version of Python for the browser. No data leave your computer. The numbers that the toy models produce are your own results, not results of the paper.</p>
+    <p class="note">You need a recent browser and an internet connection to load the course. Lessons 1 to 3 work with any browser. Lessons with training work best on a laptop or desktop computer.</p>
+  </section>
+
+  <h2>Lessons</h2>
+  <ol class="lesson-list">
+    <li><a href="lessons/01-the-problem.html"><span class="num">1</span><span><span class="t">The problem: large models, small clients</span><span class="d">Why a clinic cannot train a large language model alone. A slider shows memory against model size.</span></span></a></li>
+    <li><a href="lessons/02-federated-learning.html"><span class="num">2</span><span><span class="t">Federated learning in two minutes</span><span class="d">Clients train, a server averages. Watch three clients learn one boundary.</span></span></a></li>
+    <li><a href="lessons/03-one-size.html"><span class="num">3</span><span><span class="t">Why one model does not fit all</span><span class="d">Each client has its own budget. Try to fit one shared model to three budgets.</span></span></a></li>
+    <li><a href="lessons/04-decomposition.html"><span class="num">4</span><span><span class="t">The decomposition idea</span><span class="d">Switch heads and neurons of a small transformer layer on and off, and watch cost and accuracy.</span></span></a></li>
+    <li><a href="lessons/05-graph.html"><span class="num">5</span><span><span class="t">The model as a graph</span><span class="d">One node per attention block and per feed-forward block. A sub-network is a sub-graph.</span></span></a></li>
+    <li><a href="lessons/06-importance.html"><span class="num">6</span><span><span class="t">Importance scores</span><span class="d">Measure how much each head and neuron contributes on a client's data.</span></span></a></li>
+    <li><a href="lessons/07-allocator.html"><span class="num">7</span><span><span class="t">The allocator</span><span class="d">Choose which parts to keep under a budget, first with a simple rule, then as the paper does.</span></span></a></li>
+    <li><a href="lessons/08-aligned-averaging.html"><span class="num">8</span><span><span class="t">Training together with different sub-networks</span><span class="d">Average each part only over the clients that keep it.</span></span></a></li>
+    <li><a href="lessons/09-shared-gnn.html"><span class="num">9</span><span><span class="t">The optional shared graph network</span><span class="d">A shared network that reads each sub-network's graph and changes the output of its layers.</span></span></a></li>
+    <li><a href="lessons/10-findings.html"><span class="num">10</span><span><span class="t">What the paper found, and a final quiz</span><span class="d">The six experiments in plain words, then six questions on the whole course.</span></span></a></li>
+  </ol>
+
+  <section class="card" aria-labelledby="about">
+    <h2 class="card-title" id="about">About this course</h2>
+    <p>The course follows the paper on federated budgeted decomposition (FedBUD). Every statement about the method and its results comes from the paper.</p>
+    <!-- TODO(owner): paper link, authors and license, once the authors decide what the page may name during review -->
+  </section>
+</main>
+</body>
+</html>

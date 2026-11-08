@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1. The problem | FedBUD codebook</title>
+<meta name="description" content="Why hospitals and small companies cannot train a large language model alone.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lesson</a>
+<header class="site-header"><div class="inner">
+  <a class="site-title" href="../index.html">FedBUD codebook</a>
+  <span class="lesson-count">Lesson 1 of 10</span>
+</div></header>
+
+<main id="main">
+  <p class="kicker">Lesson 1</p>
+  <h1>The problem: large models, small clients</h1>
+  <p class="lead">Large language models need a lot of computation and data to train. Hospitals and small companies have little of both, and they must keep their data private.</p>
+
+  <h2>The idea</h2>
+  <p>A <span class="term">large language model (LLM)</span> is a network that reads and writes text. It learns from examples by adjusting its <span class="term">parameters</span>, the numbers inside the network. A larger model has more parameters, so it needs more memory to store them and more computation to use them.</p>
+  <p>Think of a district hospital that wants a model to find drug names in its clinical notes. It owns one graphics card and a few thousand notes. In this course we call such an organization a <span class="term">client</span>. The client cannot train a large model alone, because the model does not fit on its graphics card and a few thousand notes are too few. It also must not send its notes to a server outside the hospital, because the notes belong to its patients.</p>
+  <p>The FedBUD paper starts from Qwen2.5-0.5B, a language model with about half a billion parameters. Use the slider below to see how memory grows with model size, against the memory of one graphics card.</p>
+
+  <section class="card" aria-labelledby="try1">
+    <h2 class="card-title" id="try1">Try it: does the model fit?</h2>
+    <div class="control">
+      <label for="size">Model size, in billions of parameters</label>
+      <div class="row"><input type="range" id="size" min="0" max="100" step="1" value="23"><output id="size-out" for="size"></output></div>
+    </div>
+    <div class="control">
+      <label for="gpu">Memory of the client's graphics card</label>
+      <div class="row">
+        <select id="gpu" style="font:inherit;min-height:44px;padding:0 8px;border-radius:8px;border:1px solid var(--color-border)">
+          <option value="8">8 GB, a laptop</option>
+          <option value="16" selected>16 GB, a workstation</option>
+          <option value="24">24 GB, a strong workstation</option>
+          <option value="80">80 GB, a data-center card</option>
+        </select>
+      </div>
+    </div>
+    <div class="meter" id="m-use">
+      <div class="meter-label"><span>Memory to run the model, about 2 bytes per parameter</span><span id="use-gb"></span></div>
+      <div class="meter-track"><div class="meter-fill" id="use-fill"></div><div class="meter-limit" id="use-limit" aria-hidden="true"></div></div>
+    </div>
+    <div class="meter" id="m-train">
+      <div class="meter-label"><span>Memory to fine-tune every parameter, about 16 bytes per parameter</span><span id="train-gb"></span></div>
+      <div class="meter-track"><div class="meter-fill" id="train-fill"></div><div class="meter-limit" id="train-limit" aria-hidden="true"></div></div>
+    </div>
+    <p>Run the model: <span id="use-status" class="status"></span> Fine-tune it: <span id="train-status" class="status"></span></p>
+    <div class="stats">
+      <div class="stat"><div class="value" id="flops"></div><div class="label">operations per token to run the model, about 2 per parameter</div></div>
+      <div class="stat"><div class="value" id="flops-train"></div><div class="label">operations per token to train it, about 6 per parameter</div></div>
+    </div>
+    <p class="note">The orange line marks the memory of the chosen card. The byte counts are common rules of thumb for half-precision weights and for training with the Adam optimizer. Real numbers also depend on the text length and the software.</p>
+  </section>
+
+  <h2>Questions</h2>
+  <div class="question" data-kind="number" data-answer="1" data-tol="0.05">
+    <p class="q-label">Question 1</p>
+    <p>A clinic has one graphics card with 16 GB of memory. With the rule of 16 bytes per parameter, what is the largest model it can fine-tune in full? Give the size in billions of parameters.</p>
+    <div class="btn-row"><label class="sr-only" for="q1">Your answer in billions of parameters</label><input id="q1" type="number" step="0.1" inputmode="decimal"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a1" tabindex="-1" hidden>About 1 billion parameters, because 16 GB divided by 16 bytes per parameter is 1 billion. The clinic can fine-tune the half-billion model of the paper, but not a model of 7 billion parameters.</div>
+  </div>
+
+  <div class="question" data-kind="choice" data-answer="b">
+    <p class="q-label">Question 2</p>
+    <p>Why can the clinic not send its notes to a large hospital that owns more graphics cards?</p>
+    <ul class="choices">
+      <li><label><input type="radio" name="q2" value="a"> Sending the notes over the network would take too long.</label></li>
+      <li><label><input type="radio" name="q2" value="b"> The notes belong to the clinic's patients and must stay inside the clinic.</label></li>
+      <li><label><input type="radio" name="q2" value="c"> A large hospital cannot train language models.</label></li>
+    </ul>
+    <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a2">Show the result</button></div>
+    <p class="feedback" aria-live="polite"></p>
+    <div class="answer" id="a2" tabindex="-1" hidden>The second answer. Privacy rules keep patient records inside the clinic. So the clinic needs a way to learn from other clients without moving its data. Lesson 2 shows such a way.</div>
+  </div>
+
+  <h2>Try it in Python</h2>
+  <p>This cell runs Python in your browser. Change the sizes or the bytes per parameter, then press Run. The first run loads Python, which takes a few seconds.</p>
+  <div class="codecell">
+    <div class="codecell-head"><span class="lang">Python</span><div class="btn-row" style="margin:0"><button class="btn" type="button" data-run>Run</button><button class="btn secondary" type="button" data-reset>Reset</button></div></div>
+    <label class="sr-only" for="code1">Python code</label>
+    <textarea id="code1" spellcheck="false">def memory_gb(billions_of_parameters, bytes_per_parameter):
+    return billions_of_parameters * bytes_per_parameter
+
+card_gb = 16
+for size in [0.5, 1, 3, 7, 13]:
+    run = memory_gb(size, 2)
+    train = memory_gb(size, 16)
+    print(f"{size:>5} B parameters: run {run:5.1f} GB, fine-tune {train:6.1f} GB,",
+          "fits for fine-tuning" if train <= card_gb else "too large to fine-tune")</textarea>
+    <pre class="out" aria-live="polite"></pre>
+  </div>
+
+  <section class="summary" aria-labelledby="sum1">
+    <h2 id="sum1">Summary</h2>
+    <p>A client such as a clinic or a small company owns little memory, little computation and little data, and it must keep its data private. Even a model of a few billion parameters is too large for it to fine-tune alone. The rest of this course shows how FedBUD lets such clients train small parts of one large model together, without sharing their data.</p>
+  </section>
+
+  <nav class="lesson-nav" aria-label="Lessons">
+    <a href="../index.html">All lessons</a>
+    <a href="02-federated-learning.html">Next: federated learning</a>
+  </nav>
+</main>
+<script type="module" src="../assets/js/lesson01.js"></script>
+</body>
+</html>
