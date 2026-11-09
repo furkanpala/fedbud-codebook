@@ -45,8 +45,8 @@ function render() {
     mk("text", { x: x + bw * 0.3, y: Hh - m.b + 20, "text-anchor": "middle" }).textContent = d.name;
   });
   $("#chart-cap").textContent = mode === "base"
-    ? "FedBUD minus the best published method that cuts the model to the same budget. Both are single runs, so there is no statistical test."
-    : "FedBUD minus FedBUD without training together, both as the mean of three runs. A dagger marks a significant gain on that dataset.";
+    ? "The difference between FedBUD and the best published method that cuts the model to the same budget. Both are single runs, so there is no statistical test."
+    : "The difference between FedBUD and FedBUD without training together, both as the mean of three runs. A dagger marks a significant gain on that dataset.";
   $("#th-other").textContent = mode === "base" ? "Best published method" : "Training alone, mean of 3 runs";
   $("#rows").innerHTML = rows.map(({ d, other, ours }) => `<tr><th scope="row">${d.name}, ${d.metric}</th><td>${mode === "base" ? d.base[0] + " " : ""}${fmt(other, 4)}</td><td>${fmt(ours, 4)}${mode === "alone" && d.sig ? " †" : ""}</td></tr>`).join("");
 }
