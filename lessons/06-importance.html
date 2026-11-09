@@ -24,9 +24,14 @@
   <p class="lead">Before it cuts, FedBUD measures how much each head and each neuron contributes on the client's own data.</p>
 
   <h2>The idea</h2>
-  <p>Lesson 4 showed that some heads matter much more than others. Trying every combination of parts is far too slow for a real model, so FedBUD gives every head and every neuron an <span class="term">importance score</span>, a number that estimates how much the part contributes.</p>
+  <p>Lesson 4 showed that some heads matter much more than others<sup class="cite" data-refs="michel2019heads">[<a href="#ref-michel2019heads" id="cite-michel2019heads">1</a>]</sup>. Trying every combination of parts is far too slow for a real model, so FedBUD gives every head and every neuron an <span class="term">importance score</span>, a number that estimates how much the part contributes.</p>
   <p>A head matters if it produces a large output and if the next layer's parameters read that output strongly. So the score of a head is the average size of its output over the client's tokens, times the size of the parameter values that read it. FedBUD builds the score of a feed-forward neuron the same way, from the average size of the neuron's output and the size of the parameter values that carry it on. FedBUD divides each score by the total of its layer, so the scores of one layer add up to one. It computes all scores in one pass of the large model over 32 of the client's training examples.</p>
   <p>Because the scores come from the client's own data, two clients with different data can get different scores, and so different sub-networks under the same budget. When FedBUD halves a block, it keeps the heads or neurons with the highest scores.</p>
+
+  <figure class="anim" id="fig6">
+    <svg role="img" aria-label="The four heads' importance scores settle as the 32 scoring examples are read"></svg>
+    <figcaption>Live figure. The trained toy model of this lesson scores its four heads on more and more of the client's 32 scoring examples. The scores of the four heads add up to one.</figcaption>
+  </figure>
 
   <section class="card" aria-labelledby="try6">
     <h2 class="card-title" id="try6">Try it: score the parts of the toy layer</h2>
@@ -115,6 +120,15 @@ for h in np.argsort(-score):
     <p>FedBUD scores every head and neuron by how large its output is on the client's data and how strongly the next parameter values read it, and it divides the scores of a layer by their total. The scores come from one pass over 32 of the client's examples, so they are cheap, and they differ between clients with different data. Inside each block, the sub-network keeps the parts with the highest scores.</p>
   </section>
 
+<!-- refs:start -->
+  <section class="references" aria-labelledby="refs-h">
+    <h2 id="refs-h">References</h2>
+    <ol>
+      <li id="ref-michel2019heads">Paul Michel, Omer Levy and Graham Neubig (2019). Are Sixteen Heads Really Better than One?. <em>Advances in Neural Information Processing Systems 32 (NeurIPS)</em>. <a href="https://arxiv.org/abs/1905.10650">arXiv</a> <a class="back" href="#cite-michel2019heads" aria-label="Back to where reference 1 is cited">back</a></li>
+    </ol>
+    <p class="note"><a href="../references.html">All references of the course</a></p>
+  </section>
+<!-- refs:end -->
   <nav class="lesson-nav" aria-label="Lessons">
     <a href="05-graph.html">Previous: the model as a graph</a>
     <a href="07-allocator.html">Next: the allocator</a>
@@ -122,5 +136,6 @@ for h in np.argsort(-score):
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
 <script type="module" src="../assets/js/lesson06.js"></script>
+<script type="module" src="../assets/js/fig06.js"></script>
 </body>
 </html>

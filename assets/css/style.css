@@ -214,3 +214,28 @@ select.select { font: inherit; min-height: 44px; padding: 0 var(--space-2); bord
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- live figures (assets/js/anim.js) ---------- */
+figure.anim { background: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius); padding: var(--space-3); }
+figure.anim svg { width: 100%; height: auto; display: block; }
+.anim-canvas { overflow-x: auto; }
+.anim-canvas svg { min-width: 560px; }
+figure.anim svg text { font-family: var(--font-body); font-size: 15px; fill: var(--color-text); }
+.anim-controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-3); }
+.anim-controls .btn { min-width: 5.5rem; }
+.anim-speed { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 700; min-height: 44px; }
+.anim-speed select { min-height: 44px; font: inherit; padding: 0 var(--space-2); border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-card); color: var(--color-text); }
+.anim-status { margin: var(--space-2) 0 0; min-height: 3.2em; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* ---------- citations and reference lists ---------- */
+sup.cite { line-height: 0; font-size: 0.75em; }
+sup.cite a { text-decoration: underline; text-underline-offset: 1px; padding: 0 1px; }
+.references { margin-top: var(--space-5); font-size: 0.95rem; }
+.references ol { padding-left: 1.6rem; }
+.references li { margin: var(--space-2) 0; }
+.references li:target { background: var(--color-accent-soft); border-radius: 6px; }
+.references .back { margin-left: var(--space-1); }
+.ref-origin { display: inline-block; margin-left: var(--space-2); font-size: 0.8rem; color: var(--color-muted); }
+
+.anim-choice .btn[aria-pressed="true"] { background: var(--color-primary); color: var(--color-on-primary); }

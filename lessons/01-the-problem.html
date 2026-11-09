@@ -26,7 +26,12 @@
   <h2>The idea</h2>
   <p>A <span class="term">large language model (LLM)</span> is a network that reads and writes text. It learns from examples by changing its <span class="term">parameters</span>, the numbers inside the network. A larger model has more parameters, so it needs more memory to store them and more computation to use them.</p>
   <p>Think of a district hospital that wants a model to find drug names in its clinical notes. Such an organization, a <span class="term">client</span>, owns one graphics card and a few thousand notes. The client cannot train a large model alone. A model of a few billion parameters does not fit on its graphics card, and even the half-billion model of the paper costs computation for every token it reads, more than the clinic can spend, while its few thousand notes are too few to train it well. It also must not send its notes to a server outside the hospital, because the notes belong to its patients.</p>
-  <p>The FedBUD paper starts from Qwen2.5-0.5B, a language model with about half a billion parameters. To <span class="term">fine-tune</span> a model is to continue training it on the client's own notes. Use the slider below to see how memory grows with model size, against the memory of one graphics card.</p>
+  <p>The FedBUD paper starts from Qwen2.5-0.5B<sup class="cite" data-refs="qwen2024">[<a href="#ref-qwen2024" id="cite-qwen2024">1</a>]</sup>, a language model with about half a billion parameters. To <span class="term">fine-tune</span> a model is to continue training it on the client's own notes. Use the slider below to see how memory grows with model size, against the memory of one graphics card.</p>
+
+  <figure class="anim" id="fig1">
+    <svg role="img" aria-label="Memory needed to run and to fine-tune a growing model on three graphics cards"></svg>
+    <figcaption>Live figure. A model grows from half a billion to seven billion parameters on three graphics cards. Running needs about 2 bytes per parameter and fine-tuning about 16, the rule of the Python cell below. A red bar does not fit.</figcaption>
+  </figure>
 
   <section class="card" aria-labelledby="try1">
     <h2 class="card-title" id="try1">Try it: does the model fit?</h2>
@@ -105,11 +110,21 @@ for size in [0.5, 1, 3, 7, 13]:
     <p>A client such as a clinic or a small company owns little memory, little computation and little data, and it must keep its data private. Even a model of a few billion parameters is too large for it to fine-tune alone. The rest of this course shows how FedBUD lets such clients train small parts of one large model together, without sharing their data.</p>
   </section>
 
+<!-- refs:start -->
+  <section class="references" aria-labelledby="refs-h">
+    <h2 id="refs-h">References</h2>
+    <ol>
+      <li id="ref-qwen2024">Qwen Team (2024). Qwen2.5 Technical Report. <em>arXiv preprint 2412.15115</em>. <a href="https://arxiv.org/abs/2412.15115">arXiv</a> <a class="back" href="#cite-qwen2024" aria-label="Back to where reference 1 is cited">back</a></li>
+    </ol>
+    <p class="note"><a href="../references.html">All references of the course</a></p>
+  </section>
+<!-- refs:end -->
   <nav class="lesson-nav" aria-label="Lessons">
     <a href="../index.html">All lessons</a>
     <a href="02-federated-learning.html">Next: federated learning</a>
   </nav>
 </main>
 <script type="module" src="../assets/js/lesson01.js"></script>
+<script type="module" src="../assets/js/fig01.js"></script>
 </body>
 </html>

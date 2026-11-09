@@ -24,21 +24,26 @@
   <p class="lead">Every number in this lesson comes from the paper. The lesson ends with a quiz on the whole course.</p>
 
   <h2>The experiments</h2>
-  <p>The paper starts from Qwen2.5-0.5B, a language model with about half a billion parameters, and gives each client a budget of 0.6 of the cost of the blocks it can cut. With the output head, which no method can cut, this is between 0.68 and 0.71 of the full model's cost per token. The paper runs six experiments.</p>
+  <p>The paper starts from Qwen2.5-0.5B<sup class="cite" data-refs="qwen2024">[<a href="#ref-qwen2024" id="cite-qwen2024">1</a>]</sup>, a language model with about half a billion parameters, and gives each client a budget of 0.6 of the cost of the blocks it can cut. With the output head, which no method can cut, this is between 0.68 and 0.71 of the full model's cost per token. The paper runs six experiments.</p>
   <ul>
-    <li><strong>CoNLL-2003</strong>: find the names of people, places and organizations in news text. Three clients.</li>
-    <li><strong>SQuAD</strong>: answer a question with a span of a given passage. Three clients.</li>
-    <li><strong>AG News</strong>: sort news articles by topic. Three clients.</li>
-    <li><strong>XSum</strong>: summarize a news article in one sentence. Three clients.</li>
-    <li><strong>SAMSum</strong>: summarize a chat conversation. Three clients.</li>
+    <li><strong>CoNLL-2003</strong><sup class="cite" data-refs="tjong2003conll">[<a href="#ref-tjong2003conll" id="cite-tjong2003conll">2</a>]</sup>: find the names of people, places and organizations in news text. Three clients.</li>
+    <li><strong>SQuAD</strong><sup class="cite" data-refs="rajpurkar2016squad">[<a href="#ref-rajpurkar2016squad" id="cite-rajpurkar2016squad">3</a>]</sup>: answer a question with a span of a given passage. Three clients.</li>
+    <li><strong>AG News</strong><sup class="cite" data-refs="zhang2015agnews">[<a href="#ref-zhang2015agnews" id="cite-zhang2015agnews">4</a>]</sup>: sort news articles by topic. Three clients.</li>
+    <li><strong>XSum</strong><sup class="cite" data-refs="narayan2018xsum">[<a href="#ref-narayan2018xsum" id="cite-narayan2018xsum">5</a>]</sup>: summarize a news article in one sentence. Three clients.</li>
+    <li><strong>SAMSum</strong><sup class="cite" data-refs="gliwa2019samsum">[<a href="#ref-gliwa2019samsum" id="cite-gliwa2019samsum">6</a>]</sup>: summarize a chat conversation. Three clients.</li>
     <li><strong>Multi-task</strong>: four clients, each with a different task.</li>
   </ul>
-  <p>In every experiment the clients hold unequal shares of the data with different mixes of labels, topics or tasks. The paper compares FedBUD with published methods that cut a model to the same budget, with a client that trains alone, and with the full model fine-tuned on each client's data.</p>
+  <p>In every experiment the clients hold unequal shares of the data with different mixes of labels, topics or tasks. The paper compares FedBUD with published methods that cut a model to the same budget<sup class="cite" data-refs="song2024sleb,ma2023llmpruner,pan2025adaptpruner,sieberling2025evopress,muralidharan2024minitron">[<a href="#ref-song2024sleb" id="cite-song2024sleb">7</a>, <a href="#ref-ma2023llmpruner" id="cite-ma2023llmpruner">8</a>, <a href="#ref-pan2025adaptpruner" id="cite-pan2025adaptpruner">9</a>, <a href="#ref-sieberling2025evopress" id="cite-sieberling2025evopress">10</a>, <a href="#ref-muralidharan2024minitron" id="cite-muralidharan2024minitron">11</a>]</sup>, with a client that trains alone, and with the full model fine-tuned on each client's data.</p>
 
   <h2>The findings</h2>
   <p>First, at the same cost per token, the sub-networks that FedBUD trains together scored above the best published method that cuts a model, on six of six datasets. The published methods ran once each, so this comparison has no statistical test.</p>
-  <p>Second, training together beat each client training alone on six of six datasets in the mean over three runs. Across the datasets the gain is significant, and it is significant on its own on three of them, SQuAD, SAMSum and the multi-task experiment.</p>
-  <p>Third, aligned averaging scored higher than averaging position by position on five of six datasets in one series of runs, but it raised the loss of the multi-task experiment in both series. Fourth, the allocator's sub-networks beat random sub-networks on five of six datasets and tied on the sixth, while a hand-designed rule did better than the allocator on four of six. Fifth, sharing one sub-network or the importance scores across clients, when the validation data choose it, helped significantly on CoNLL and XSum, and did not help on SQuAD. Finally, at 0.68 to 0.71 of the cost, the sub-networks scored below the full model fine-tuned on each client's data on all six datasets. That gap is the price of the budget.</p>
+  <p>Second, training together outperformed each client training alone on six of six datasets in the mean over three runs. Across the datasets the gain is significant, and it is significant on its own on three of them, SQuAD, SAMSum and the multi-task experiment.</p>
+  <p>Third, aligned averaging scored higher than averaging position by position on five of six datasets in one series of runs, but it raised the loss of the multi-task experiment in both series. Fourth, the allocator's sub-networks outperformed random sub-networks on five of six datasets and tied on the sixth, while a hand-designed rule did better than the allocator on four of six. Fifth, sharing one sub-network or the importance scores across clients, when the validation data choose it, helped significantly on CoNLL and XSum, and did not help on SQuAD. Finally, at 0.68 to 0.71 of the cost, the sub-networks scored below the full model fine-tuned on each client's data on all six datasets. That gap is the price of the budget.</p>
+
+  <figure class="anim" id="fig10">
+    <svg role="img" aria-label="Six panels: FedBUD against training alone, mean and standard deviation over three seeds"></svg>
+    <figcaption>Live figure. Training alone against FedBUD in the six experiments of the paper, as the mean over three seeds with whiskers of one standard deviation. “Significant” marks the datasets where the paper's paired test over the seeds finds the gain significant.</figcaption>
+  </figure>
 
   <section class="card" aria-labelledby="try10">
     <h2 class="card-title" id="try10">Explore the numbers</h2>
@@ -110,7 +115,7 @@
       <legend class="q-label">Question 6</legend>
       <p>The gate of the optional shared GNN starts at zero. Why?</p>
       <ul class="choices">
-        <li><label><input type="radio" name="f6" value="a"> So that the GNN never changes anything.</label></li>
+        <li><label><input type="radio" name="f6" value="a"> So that the GNN changes nothing at all.</label></li>
         <li><label><input type="radio" name="f6" value="b"> So that the GNN trains faster.</label></li>
         <li><label><input type="radio" name="f6" value="c"> So that training starts from aligned averaging alone, and each client uses the GNN only as far as its own training finds it useful.</label></li>
       </ul>
@@ -127,14 +132,34 @@
 
   <section class="summary" aria-labelledby="sum10">
     <h2 id="sum10">Summary of the course</h2>
-    <p>Clients such as hospitals and small companies cannot train a large language model alone, and they must keep their data private. FedBUD reads the large model as a graph, scores its parts on each client's data, and lets a learned allocator cut one sub-network per client within the client's budget. The clients then train their sub-networks together with aligned averaging, without sharing data. In the paper, this beat the published methods that cut a model to the same budget and beat training alone on all six datasets, while staying below the full model that the clients could not afford. The paper names its limits plainly. It tested one budget, one model of half a billion parameters, and three or four clients.</p>
+    <p>Clients such as hospitals and small companies cannot train a large language model alone, and they must keep their data private. FedBUD reads the large model as a graph, scores its parts on each client's data, and lets a learned allocator cut one sub-network per client within the client's budget. The clients then train their sub-networks together with aligned averaging, without sharing data. In the paper, this outperformed the published methods that cut a model to the same budget and outperformed training alone on all six datasets, while staying below the full model that the clients could not afford. The paper names its limits plainly. It tested one budget, one model of half a billion parameters, and three or four clients.</p>
   </section>
 
+<!-- refs:start -->
+  <section class="references" aria-labelledby="refs-h">
+    <h2 id="refs-h">References</h2>
+    <ol>
+      <li id="ref-qwen2024">Qwen Team (2024). Qwen2.5 Technical Report. <em>arXiv preprint 2412.15115</em>. <a href="https://arxiv.org/abs/2412.15115">arXiv</a> <a class="back" href="#cite-qwen2024" aria-label="Back to where reference 1 is cited">back</a></li>
+      <li id="ref-tjong2003conll">Erik F. Tjong Kim Sang and Fien De Meulder (2003). Introduction to the CoNLL-2003 Shared Task: Language-Independent Named Entity Recognition. <em>Proceedings of the Seventh Conference on Natural Language Learning at HLT-NAACL 2003, 142–147</em>. <a href="https://aclanthology.org/W03-0419/">ACL Anthology</a> <a class="back" href="#cite-tjong2003conll" aria-label="Back to where reference 2 is cited">back</a></li>
+      <li id="ref-rajpurkar2016squad">Pranav Rajpurkar et al. (2016). SQuAD: 100,000+ Questions for Machine Comprehension of Text. <em>Proceedings of the 2016 Conference on Empirical Methods in Natural Language Processing (EMNLP), 2383–2392</em>. <a href="https://doi.org/10.18653/v1/D16-1264">doi.org</a> <a class="back" href="#cite-rajpurkar2016squad" aria-label="Back to where reference 3 is cited">back</a></li>
+      <li id="ref-zhang2015agnews">Xiang Zhang, Junbo Zhao and Yann LeCun (2015). Character-level Convolutional Networks for Text Classification. <em>Advances in Neural Information Processing Systems 28 (NeurIPS), 649–657</em>. <a href="https://arxiv.org/abs/1509.01626">arXiv</a> <a class="back" href="#cite-zhang2015agnews" aria-label="Back to where reference 4 is cited">back</a></li>
+      <li id="ref-narayan2018xsum">Shashi Narayan, Shay B. Cohen and Mirella Lapata (2018). Don&#x27;t Give Me the Details, Just the Summary! Topic-Aware Convolutional Neural Networks for Extreme Summarization. <em>Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing (EMNLP), 1797–1807</em>. <a href="https://doi.org/10.18653/v1/D18-1206">doi.org</a> <a class="back" href="#cite-narayan2018xsum" aria-label="Back to where reference 5 is cited">back</a></li>
+      <li id="ref-gliwa2019samsum">Bogdan Gliwa et al. (2019). SAMSum Corpus: A Human-annotated Dialogue Dataset for Abstractive Summarization. <em>Proceedings of the 2nd Workshop on New Frontiers in Summarization, 70–79</em>. <a href="https://doi.org/10.18653/v1/D19-5409">doi.org</a> <a class="back" href="#cite-gliwa2019samsum" aria-label="Back to where reference 6 is cited">back</a></li>
+      <li id="ref-song2024sleb">Jiwon Song et al. (2024). SLEB: Streamlining LLMs through Redundancy Verification and Elimination of Transformer Blocks. <em>Proceedings of the 41st International Conference on Machine Learning (ICML)</em>. <a href="https://arxiv.org/abs/2402.09025">arXiv</a> <a class="back" href="#cite-song2024sleb" aria-label="Back to where reference 7 is cited">back</a></li>
+      <li id="ref-ma2023llmpruner">Xinyin Ma, Gongfan Fang and Xinchao Wang (2023). LLM-Pruner: On the Structural Pruning of Large Language Models. <em>Advances in Neural Information Processing Systems 36 (NeurIPS)</em>. <a href="https://arxiv.org/abs/2305.11627">arXiv</a> <a class="back" href="#cite-ma2023llmpruner" aria-label="Back to where reference 8 is cited">back</a></li>
+      <li id="ref-pan2025adaptpruner">Rui Pan et al. (2025). Adapt-Pruner: Adaptive Structural Pruning for Efficient Small Language Model Training. <em>arXiv preprint 2502.03460</em>. <a href="https://arxiv.org/abs/2502.03460">arXiv</a> <a class="back" href="#cite-pan2025adaptpruner" aria-label="Back to where reference 9 is cited">back</a></li>
+      <li id="ref-sieberling2025evopress">Oliver Sieberling et al. (2025). EvoPress: Accurate Dynamic Model Compression via Evolutionary Search. <em>Proceedings of the 42nd International Conference on Machine Learning (ICML)</em>. <a href="https://arxiv.org/abs/2410.14649">arXiv</a> <a class="back" href="#cite-sieberling2025evopress" aria-label="Back to where reference 10 is cited">back</a></li>
+      <li id="ref-muralidharan2024minitron">Saurav Muralidharan et al. (2024). Compact Language Models via Pruning and Knowledge Distillation. <em>Advances in Neural Information Processing Systems 37 (NeurIPS)</em>. <a href="https://arxiv.org/abs/2407.14679">arXiv</a> <a class="back" href="#cite-muralidharan2024minitron" aria-label="Back to where reference 11 is cited">back</a></li>
+    </ol>
+    <p class="note"><a href="../references.html">All references of the course</a></p>
+  </section>
+<!-- refs:end -->
   <nav class="lesson-nav" aria-label="Lessons">
     <a href="09-shared-gnn.html">Previous: the optional shared graph neural network</a>
     <a href="../index.html">Back to all lessons</a>
   </nav>
 </main>
 <script type="module" src="../assets/js/lesson10.js"></script>
+<script type="module" src="../assets/js/fig10.js"></script>
 </body>
 </html>

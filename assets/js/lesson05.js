@@ -17,7 +17,7 @@ nodes.push({ kind: "head", label: "Output head" });
 
 const actions = (n) => (n.kind === "attn" ? ATTN_ACTIONS : FFN_ACTIONS);
 const frac = (n) => (n.kind === "attn" || n.kind === "ffn" ? actions(n)[n.a][1] : 1);
-const actName = (n) => (n.kind === "attn" || n.kind === "ffn" ? actions(n)[n.a][0] : "never cut");
+const actName = (n) => (n.kind === "attn" || n.kind === "ffn" ? actions(n)[n.a][0] : "always kept");
 
 function cost() {
   let kept = 0, full = 0;

@@ -25,8 +25,13 @@
 
   <h2>The idea</h2>
   <p>Lesson 6 gave every part a score. The <span class="term">allocator</span> now chooses the configuration, the action of every block, so that the sub-network fits the budget and still works well on the client's data. A simple way is a <span class="term">rule</span> written by hand. The paper tests two such rules. One removes feed-forward neurons first, lowest score first, until the sub-network fits. The other narrows every block by the same share.</p>
-  <p>FedBUD learns the choice instead. Its allocator is a <span class="term">policy</span>, a small network that reads the client's graph from Lesson 5 and gives every block a probability for each action. In each of the 40 iterations of the search, the policy draws 8 configurations for the client. A sampled configuration can cost more than the budget, so a <span class="term">budget repair</span> step makes it cheaper, block by block, starting where the policy is most willing to give up, until it fits. The policy then raises the probability of the configurations that did well, and lowers the others. Researchers call this kind of learning from trial and reward <span class="term">reinforcement learning</span>.</p>
+  <p>FedBUD learns the choice instead. Its allocator is a <span class="term">policy</span>, a small network that reads the client's graph from Lesson 5 and gives every block a probability for each action<sup class="cite" data-refs="yu2022gnnrl">[<a href="#ref-yu2022gnnrl" id="cite-yu2022gnnrl">1</a>]</sup>. In each of the 40 iterations of the search, the policy draws 8 configurations for the client. A sampled configuration can cost more than the budget, so a <span class="term">budget repair</span> step makes it cheaper, block by block, starting where the policy is most willing to give up, until it fits. The policy then raises the probability of the configurations that did well, and lowers the others. Researchers call this kind of learning from trial and reward <span class="term">reinforcement learning</span><sup class="cite" data-refs="williams1992reinforce">[<a href="#ref-williams1992reinforce" id="cite-williams1992reinforce">2</a>]</sup>.</p>
   <p>To judge a configuration properly, FedBUD would train the cut model briefly and test it, which takes about a minute per candidate. Measuring the loss right after cutting takes about two seconds. So the search ranks candidates by the quick loss, corrects it with a small learned formula, and trains and tests only the best candidates. The client then gets the tested configuration with the lowest loss.</p>
+
+  <figure class="anim" id="fig7">
+    <svg role="img" aria-label="The learned policy's keep probabilities and sampled costs over 40 iterations at a budget of 0.6"></svg>
+    <figcaption>Live figure. The learned policy of this lesson searches at a budget of 0.6 on the trained toy layer. Bars show the probability to keep each part. Hollow dots show an iteration's 8 sampled configurations before the budget repair, and filled dots after it.</figcaption>
+  </figure>
 
   <section class="card" aria-labelledby="try7a">
     <h2 class="card-title" id="try7a">Try it: be the allocator</h2>
@@ -98,7 +103,7 @@
 
   <div class="question">
     <p class="q-label">Question 3</p>
-    <p>Look at your table. Does the learned policy always beat the hand-designed rules? Does any way beat random sub-networks?</p>
+    <p>Look at your table. Does the learned policy always outperform the hand-designed rules? Does any way outperform random sub-networks?</p>
     <div class="btn-row"><button class="btn secondary" type="button" data-reveal="a3">Show the result</button></div>
     <div class="answer" id="a3" tabindex="-1" hidden>Your toy table may differ from run to run. In the paper, against random sub-networks at the same budget, the sub-networks FedBUD selected scored higher on five of six datasets and equal on the sixth, so the choice of parts matters. Against the hand-designed rules, the better rule scored higher than the selected sub-networks on four of six datasets. So a simple rule on the same importance scores can replace the learned search, and the paper says so.</div>
   </div>
@@ -131,9 +136,19 @@ print("cost:", round(cost[keep].sum() / cost.sum(), 2))</textarea>
 
   <section class="summary" aria-labelledby="sum7">
     <h2 id="sum7">Summary</h2>
-    <p>The allocator chooses, for each client, how much of every block to keep within the budget. FedBUD learns this choice with a policy that reads the client's graph, draws configurations, repairs them to the budget and rewards the good ones. It ranks candidates by a quick loss and trains and tests only the best. In the paper, its choices beat random sub-networks, while a simple rule on the same scores did as well or better on most datasets.</p>
+    <p>The allocator chooses, for each client, how much of every block to keep within the budget. FedBUD learns this choice with a policy that reads the client's graph, draws configurations, repairs them to the budget and rewards the good ones. It ranks candidates by a quick loss and trains and tests only the best. In the paper, its choices outperformed random sub-networks, while a simple rule on the same scores did as well or better on most datasets.</p>
   </section>
 
+<!-- refs:start -->
+  <section class="references" aria-labelledby="refs-h">
+    <h2 id="refs-h">References</h2>
+    <ol>
+      <li id="ref-yu2022gnnrl">Sixing Yu, Arya Mazaheri and Ali Jannesari (2022). Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning. <em>Proceedings of the 39th International Conference on Machine Learning (ICML), PMLR 162, 25656–25667</em>. <a href="https://proceedings.mlr.press/v162/yu22e.html">PMLR</a> <a class="back" href="#cite-yu2022gnnrl" aria-label="Back to where reference 1 is cited">back</a></li>
+      <li id="ref-williams1992reinforce">Ronald J. Williams (1992). Simple statistical gradient-following algorithms for connectionist reinforcement learning. <em>Machine Learning 8, 229–256</em>. <a href="https://doi.org/10.1007/BF00992696">doi.org</a> <a class="back" href="#cite-williams1992reinforce" aria-label="Back to where reference 2 is cited">back</a></li>
+    </ol>
+    <p class="note"><a href="../references.html">All references of the course</a></p>
+  </section>
+<!-- refs:end -->
   <nav class="lesson-nav" aria-label="Lessons">
     <a href="06-importance.html">Previous: importance scores</a>
     <a href="08-aligned-averaging.html">Next: training together</a>
@@ -141,5 +156,6 @@ print("cost:", round(cost[keep].sum() / cost.sum(), 2))</textarea>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
 <script type="module" src="../assets/js/lesson07.js"></script>
+<script type="module" src="../assets/js/fig07.js"></script>
 </body>
 </html>

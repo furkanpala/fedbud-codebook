@@ -24,8 +24,13 @@
   <p class="lead">FedBUD draws the model as a graph. Each attention block and each feed-forward block is a node, and a client's sub-network is a part of this graph.</p>
 
   <h2>The idea</h2>
-  <p>Every layer of the model has one <span class="term">attention block</span>, which holds all its attention heads, and one <span class="term">feed-forward block</span>, which holds all its feed-forward neurons. FedBUD draws the model as a <span class="term">graph</span> of points, called nodes, joined by lines, called edges. The graph has one node for the embedding, which turns tokens into numbers, one node for each attention block and each feed-forward block, and one node for the output head, which turns numbers back into tokens. So a model with L layers has 2L + 2 nodes, in the order in which the model computes.</p>
+  <p>Every layer of the model has one <span class="term">attention block</span>, which holds all its attention heads, and one <span class="term">feed-forward block</span>, which holds all its feed-forward neurons. FedBUD draws the model as a <span class="term">graph</span> of points, called nodes, joined by lines, called edges<sup class="cite" data-refs="yu2022gnnrl">[<a href="#ref-yu2022gnnrl" id="cite-yu2022gnnrl">1</a>]</sup>. The graph has one node for the embedding, which turns tokens into numbers, one node for each attention block and each feed-forward block, and one node for the output head, which turns numbers back into tokens. So a model with L layers has 2L + 2 nodes, in the order in which the model computes.</p>
   <p>Edges join each node to the next node and to the node after that. With these edges, a node sees its neighbors, not only its position in the list. FedBUD then gives every block one <span class="term">action</span>. FedBUD can keep, halve or drop an attention block. It can keep, halve, quarter or drop a feed-forward block. The model skips a dropped block, so the block's input passes on unchanged. The actions of all blocks form the client's <span class="term">configuration</span>, and the kept blocks form the sub-network.</p>
+
+  <figure class="anim" id="fig5">
+    <svg role="img" aria-label="The model graph of a three-layer model, eight nodes, with one block dropped and skipped"></svg>
+    <figcaption>Live figure. The model graph of a three-layer model draws itself: one node per block, an edge to the next node and to the node after it. The actions show one example configuration.</figcaption>
+  </figure>
 
   <section class="card" aria-labelledby="try5">
     <h2 class="card-title" id="try5">Try it: pick an action for each block</h2>
@@ -33,7 +38,7 @@
     <div class="legend">
       <span style="--swatch: #4338ca">attention block</span>
       <span style="--swatch: #0f766e">feed-forward block</span>
-      <span style="--swatch: #9ca3af">embedding and output head, never cut</span>
+      <span style="--swatch: #9ca3af">embedding and output head, always kept</span>
     </div>
     <figure>
       <svg class="chart" id="graph" role="group" aria-label="Graph of the model. Each block is a button that changes its action."></svg>
@@ -108,11 +113,21 @@ for i, j in edges:
     <p>FedBUD reads the model as a graph with one node per attention block and one per feed-forward block, plus the embedding and the output head. Each block gets an action, from keeping it to dropping it, and the actions of all blocks form the client's configuration. Each client gets its own graph, because FedBUD also writes on every node facts about the client, such as its budget and how much each block matters on its data. Lesson 6 shows how FedBUD measures that.</p>
   </section>
 
+<!-- refs:start -->
+  <section class="references" aria-labelledby="refs-h">
+    <h2 id="refs-h">References</h2>
+    <ol>
+      <li id="ref-yu2022gnnrl">Sixing Yu, Arya Mazaheri and Ali Jannesari (2022). Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning. <em>Proceedings of the 39th International Conference on Machine Learning (ICML), PMLR 162, 25656–25667</em>. <a href="https://proceedings.mlr.press/v162/yu22e.html">PMLR</a> <a class="back" href="#cite-yu2022gnnrl" aria-label="Back to where reference 1 is cited">back</a></li>
+    </ol>
+    <p class="note"><a href="../references.html">All references of the course</a></p>
+  </section>
+<!-- refs:end -->
   <nav class="lesson-nav" aria-label="Lessons">
     <a href="04-decomposition.html">Previous: the decomposition idea</a>
     <a href="06-importance.html">Next: importance scores</a>
   </nav>
 </main>
 <script type="module" src="../assets/js/lesson05.js"></script>
+<script type="module" src="../assets/js/fig05.js"></script>
 </body>
 </html>

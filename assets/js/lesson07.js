@@ -62,7 +62,7 @@ function randomAverage(budget, seed) {
 
 /* A small learned policy: one keep probability per part, 40 rounds of 8 sampled configurations,
    budget repair where the policy is most willing to give up, reward = validation accuracy. */
-async function learnedPolicy(budget, seed) {
+async function learnedPolicy(budget, seed, onIter = null) {
   const r = rng(seed);
   const logit = new Array(P).fill(Math.log(0.7 / 0.3));
   const sig = (z) => 1 / (1 + Math.exp(-z));
@@ -73,9 +73,10 @@ async function learnedPolicy(budget, seed) {
       const p = logit.map(sig);
       const k = p.map((pi) => (r() < pi ? 1 : 0));
       if (headsLeft(k) === 0) k[p.slice(0, H).indexOf(Math.max(...p.slice(0, H)))] = 1;
+      const raw = cost(k);
       const kr = repair(k, budget, p);
       const v = acc(kr, val);
-      samples.push({ k: kr, v });
+      samples.push({ k: kr, v, raw, fixed: cost(kr) });
       if (v > bestVal) { bestVal = v; best = kr; }
     }
     const mean = samples.reduce((a, s) => a + s.v, 0) / 8;
@@ -84,6 +85,7 @@ async function learnedPolicy(budget, seed) {
       const adv = (s.v - mean) / sd;
       for (let i = 0; i < P; i++) logit[i] += (0.3 / 8) * adv * (s.k[i] - sig(logit[i]));
     }
+    if (onIter) onIter({ it, p: logit.map(sig), samples: samples.map((s) => ({ raw: s.raw, fixed: s.fixed, v: s.v })), bestVal });
     if (it % 10 === 9) await new Promise((res) => setTimeout(res, 0));
   }
   // the most probable configuration, repaired, is checked against the best one found
@@ -186,6 +188,9 @@ async function start() {
   $("#lab").hidden = false;
   $("#compare").disabled = false;
   updatePart1("Press a part to remove it, and press it again to bring it back.");
+  // the live figure (fig07.js) replays the learned policy's search on this model
+  window.__toy7 = { learnedPolicy, cost, partName, H, P, acc: (k) => acc(k, model.test) };
+  window.dispatchEvent(new Event("toy7-ready"));
 }
 
 bindRange($("#budget"), $("#budget-out"), (v) => fmt(v, 2), () => { if (model) updatePart1(); });

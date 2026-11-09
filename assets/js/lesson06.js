@@ -76,6 +76,9 @@ async function start() {
   $("#train-status").textContent = trainedText(model);
   $("#lab").hidden = false;
   score("A");
+  // the live figure (fig06.js) streams the scoring examples through this model
+  window.__toy6 = { model, data };
+  window.dispatchEvent(new Event("toy6-ready"));
 }
 
 bindRange($("#k"), $("#k-out"), (v) => v + (v === 1 ? " neuron" : " neurons"), updateK);

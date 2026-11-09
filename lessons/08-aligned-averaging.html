@@ -24,8 +24,13 @@
   <p class="lead">When clients keep different parts, the server must average each part only over the clients that keep it, a rule the paper names aligned averaging.</p>
 
   <h2>The idea</h2>
-  <p>FedBUD starts each client's sub-network with <span class="term">weight inheritance</span>, where a new sub-network starts from the trained parameter values of the full model for the parts it keeps, instead of from random numbers. The client then trains a small update on its own data. In the paper this update is a LoRA update, which leaves the inherited parameters frozen and trains two small matrices of parameters for each matrix of the model.</p>
-  <p>Federated averaging from Lesson 2 averages the clients' copies position by position. With different sub-networks, this goes wrong. A client that keeps neurons 1, 2, 5 and 6 stores them in rows 1 to 4 of its matrices, while a client that keeps neurons 3, 4, 7 and 8 stores those in its rows 1 to 4. Averaging row 2 of both mixes neuron 2 with neuron 4. <span class="term">Aligned averaging</span> labels every row with the head or neuron it belongs to, and averages each head or neuron only over the clients that keep it. A part that only one client keeps keeps that client's values, and no client receives values for a part it does not have.</p>
+  <p>FedBUD starts each client's sub-network with <span class="term">weight inheritance</span>, where a new sub-network starts from the trained parameter values of the full model for the parts it keeps, instead of from random numbers. The client then trains a small update on its own data. In the paper this update is a LoRA update<sup class="cite" data-refs="hu2022lora">[<a href="#ref-hu2022lora" id="cite-hu2022lora">1</a>]</sup>, which leaves the inherited parameters frozen and trains two small matrices of parameters for each matrix of the model.</p>
+  <p>Federated averaging from Lesson 2 averages the clients' copies position by position. With different sub-networks, this goes wrong. A client that keeps neurons 1, 2, 5 and 6 stores them in rows 1 to 4 of its matrices, while a client that keeps neurons 3, 4, 7 and 8 stores those in its rows 1 to 4. Averaging row 2 of both mixes neuron 2 with neuron 4. <span class="term">Aligned averaging</span> labels every row with the head or neuron it belongs to, and averages each head or neuron only over the clients that keep it<sup class="cite" data-refs="diao2021heterofl,alam2022fedrolex,wu2024fiarse">[<a href="#ref-diao2021heterofl" id="cite-diao2021heterofl">2</a>, <a href="#ref-alam2022fedrolex" id="cite-alam2022fedrolex">3</a>, <a href="#ref-wu2024fiarse" id="cite-wu2024fiarse">4</a>]</sup>. A part that only one client keeps keeps that client's values, and no client receives values for a part it does not have.</p>
+
+  <figure class="anim" id="fig8">
+    <svg role="img" aria-label="Position by position, four server slots mix different neurons; aligned, none does"></svg>
+    <figcaption>Live figure. What the server averages when three clients keep different neurons of the toy layer. Switch between averaging position by position and aligned averaging.</figcaption>
+  </figure>
 
   <section class="card" aria-labelledby="try8a">
     <h2 class="card-title" id="try8a">Try it: which rows does the server average together?</h2>
@@ -128,11 +133,24 @@ for r in range(8):
     <p>Each sub-network inherits the trained parameter values of the parts it keeps and learns a small update on the client's data. Because clients keep different parts, the server labels every row with its head or neuron and averages each one only over the clients that keep it. When all clients keep the same parts, this is plain federated averaging. In the paper it scored higher than averaging position by position on most datasets, but not when clients held different tasks.</p>
   </section>
 
+<!-- refs:start -->
+  <section class="references" aria-labelledby="refs-h">
+    <h2 id="refs-h">References</h2>
+    <ol>
+      <li id="ref-hu2022lora">Edward J. Hu et al. (2022). LoRA: Low-Rank Adaptation of Large Language Models. <em>International Conference on Learning Representations (ICLR)</em>. <a href="https://arxiv.org/abs/2106.09685">arXiv</a> <a class="back" href="#cite-hu2022lora" aria-label="Back to where reference 1 is cited">back</a></li>
+      <li id="ref-diao2021heterofl">Enmao Diao, Jie Ding and Vahid Tarokh (2021). HeteroFL: Computation and Communication Efficient Federated Learning for Heterogeneous Clients. <em>International Conference on Learning Representations (ICLR)</em>. <a href="https://arxiv.org/abs/2010.01264">arXiv</a> <a class="back" href="#cite-diao2021heterofl" aria-label="Back to where reference 2 is cited">back</a></li>
+      <li id="ref-alam2022fedrolex">Samiul Alam et al. (2022). FedRolex: Model-Heterogeneous Federated Learning with Rolling Sub-Model Extraction. <em>Advances in Neural Information Processing Systems 35 (NeurIPS)</em>. <a href="https://arxiv.org/abs/2212.01548">arXiv</a> <a class="back" href="#cite-alam2022fedrolex" aria-label="Back to where reference 3 is cited">back</a></li>
+      <li id="ref-wu2024fiarse">Feijie Wu et al. (2024). FIARSE: Model-Heterogeneous Federated Learning via Importance-Aware Submodel Extraction. <em>Advances in Neural Information Processing Systems 37 (NeurIPS)</em>. <a href="https://arxiv.org/abs/2407.19389">arXiv</a> <a class="back" href="#cite-wu2024fiarse" aria-label="Back to where reference 4 is cited">back</a></li>
+    </ol>
+    <p class="note"><a href="../references.html">All references of the course</a></p>
+  </section>
+<!-- refs:end -->
   <nav class="lesson-nav" aria-label="Lessons">
     <a href="07-allocator.html">Previous: the allocator</a>
     <a href="09-shared-gnn.html">Next: the optional shared graph neural network</a>
   </nav>
 </main>
 <script type="module" src="../assets/js/lesson08.js"></script>
+<script type="module" src="../assets/js/fig08.js"></script>
 </body>
 </html>

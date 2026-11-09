@@ -42,7 +42,19 @@ assets/js/common.js        questions, Python cells (Pyodide), small SVG charts
 assets/js/toy-transformer.js  the toy transformer layer (Lessons 4, 6, 7)
 assets/js/toy-mlp.js       the toy federation with different sub-networks (Lessons 8, 9)
 assets/js/lessonNN.js      the interactive part of each lesson
+assets/js/anim.js          the engine of the live figures (play, pause, step, speed, reduced motion)
+assets/js/figNN.js         the live figure of each lesson
+references.html            every cited work, generated
+tools/refs.json            the reference list (each entry checked against its DOI, arXiv or proceedings record)
+tools/build_refs.py        numbers the citation markers of each lesson and writes the reference lists
 ```
+
+## Citations
+
+In a lesson, write a marker after the clause it supports, for example
+`<sup class="cite" data-refs="mcmahan2017"></sup>`, add the entry to `tools/refs.json` if it is new, and run
+`python tools/build_refs.py` from the repository root. The script numbers the markers of every page, writes each
+page's reference list and rebuilds `references.html`. Running it twice gives the same files.
 
 ## Open items before publishing
 

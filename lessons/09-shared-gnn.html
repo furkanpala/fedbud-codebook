@@ -24,9 +24,14 @@
   <p class="lead">Because the clients' sub-networks keep different parts, FedBUD offers an optional shared graph neural network (GNN) that reads each sub-network's graph and changes the output of its layers.</p>
 
   <h2>The idea</h2>
-  <p>A <span class="term">GNN</span> is a network that reads a graph, such as the graph of Lesson 5, and returns a short list of numbers for every node. FedBUD can give every client a copy of one shared GNN. The GNN reads the graph of the client's sub-network. A small private part of each client then turns the GNN's numbers into a <span class="term">scale</span> and a <span class="term">shift</span> for each layer. Each layer's output becomes output + gate × (scale × output + shift).</p>
+  <p>A <span class="term">GNN</span> is a network that reads a graph, such as the graph of Lesson 5, and returns a short list of numbers for every node<sup class="cite" data-refs="velickovic2018gat">[<a href="#ref-velickovic2018gat" id="cite-velickovic2018gat">1</a>]</sup>. FedBUD can give every client a copy of one shared GNN. The GNN reads the graph of the client's sub-network. A small private part of each client then turns the GNN's numbers into a <span class="term">scale</span> and a <span class="term">shift</span> for each layer<sup class="cite" data-refs="perez2018film">[<a href="#ref-perez2018film" id="cite-perez2018film">2</a>]</sup>. Each layer's output becomes output + gate × (scale × output + shift).</p>
   <p>The <span class="term">gate</span> is a number that each client learns, and it starts at zero. So in the first round the shared GNN changes nothing, and training starts from aligned averaging alone. The server averages the clients' copies of the GNN together with the aligned updates of Lesson 8. The private part and the gate stay on the client.</p>
   <p>The paper proves that this GNN is stable. Two sub-networks with similar graphs get similar outputs from it. The shared GNN is optional, and the main results of the paper do not use it.</p>
+
+  <figure class="anim" id="fig9">
+    <svg role="img" aria-label="Messages pass along the graph in two hops, then the gate opens and changes one layer's output"></svg>
+    <figcaption>Live figure. The shared GNN passes messages along the graph in two hops and turns them into a scale and a shift for each layer, and the gate opens from zero. The bars use the numbers of the Python cell below.</figcaption>
+  </figure>
 
   <section class="card" aria-labelledby="try9">
     <h2 class="card-title" id="try9">Try it: switch the shared GNN on and off</h2>
@@ -116,11 +121,22 @@ for gate in [0.0, 0.5, 1.0]:
     <p>FedBUD offers an optional shared GNN that reads each sub-network's graph and, through a private part and a gate that starts at zero, scales and shifts the output of each layer. The server averages the GNN, and the private parts and gates stay on the clients. The paper proves that the GNN is stable, but its measured effect was small and mixed, so the main results do not use it.</p>
   </section>
 
+<!-- refs:start -->
+  <section class="references" aria-labelledby="refs-h">
+    <h2 id="refs-h">References</h2>
+    <ol>
+      <li id="ref-velickovic2018gat">Petar Veličković et al. (2018). Graph Attention Networks. <em>International Conference on Learning Representations (ICLR)</em>. <a href="https://arxiv.org/abs/1710.10903">arXiv</a> <a class="back" href="#cite-velickovic2018gat" aria-label="Back to where reference 1 is cited">back</a></li>
+      <li id="ref-perez2018film">Ethan Perez et al. (2018). FiLM: Visual Reasoning with a General Conditioning Layer. <em>Proceedings of the AAAI Conference on Artificial Intelligence 32</em>. <a href="https://doi.org/10.1609/aaai.v32i1.11671">doi.org</a> <a class="back" href="#cite-perez2018film" aria-label="Back to where reference 2 is cited">back</a></li>
+    </ol>
+    <p class="note"><a href="../references.html">All references of the course</a></p>
+  </section>
+<!-- refs:end -->
   <nav class="lesson-nav" aria-label="Lessons">
     <a href="08-aligned-averaging.html">Previous: training together</a>
     <a href="10-findings.html">Next: what the paper found</a>
   </nav>
 </main>
 <script type="module" src="../assets/js/lesson09.js"></script>
+<script type="module" src="../assets/js/fig09.js"></script>
 </body>
 </html>

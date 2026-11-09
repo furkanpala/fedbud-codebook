@@ -1,0 +1,321 @@
+[
+ {
+  "key": "mcmahan2017",
+  "authors": [
+   "H. Brendan McMahan",
+   "Eider Moore",
+   "Daniel Ramage",
+   "Seth Hampson",
+   "Blaise Agüera y Arcas"
+  ],
+  "year": 2017,
+  "title": "Communication-Efficient Learning of Deep Networks from Decentralized Data",
+  "venue": "Proceedings of the 20th International Conference on Artificial Intelligence and Statistics (AISTATS), PMLR 54, 1273–1282",
+  "url": "https://proceedings.mlr.press/v54/mcmahan17a.html",
+  "paper": true
+ },
+ {
+  "key": "vaswani2017",
+  "authors": [
+   "Ashish Vaswani",
+   "Noam Shazeer",
+   "Niki Parmar",
+   "Jakob Uszkoreit",
+   "Llion Jones",
+   "Aidan N. Gomez",
+   "Lukasz Kaiser",
+   "Illia Polosukhin"
+  ],
+  "year": 2017,
+  "title": "Attention Is All You Need",
+  "venue": "Advances in Neural Information Processing Systems 30 (NeurIPS)",
+  "url": "https://arxiv.org/abs/1706.03762",
+  "paper": false
+ },
+ {
+  "key": "hu2022lora",
+  "authors": [
+   "Edward J. Hu",
+   "Yelong Shen",
+   "Phillip Wallis",
+   "Zeyuan Allen-Zhu",
+   "Yuanzhi Li",
+   "Shean Wang",
+   "Lu Wang",
+   "Weizhu Chen"
+  ],
+  "year": 2022,
+  "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+  "venue": "International Conference on Learning Representations (ICLR)",
+  "url": "https://arxiv.org/abs/2106.09685",
+  "paper": true
+ },
+ {
+  "key": "qwen2024",
+  "authors": [
+   "Qwen Team"
+  ],
+  "year": 2024,
+  "title": "Qwen2.5 Technical Report",
+  "venue": "arXiv preprint 2412.15115",
+  "url": "https://arxiv.org/abs/2412.15115",
+  "paper": true
+ },
+ {
+  "key": "tjong2003conll",
+  "authors": [
+   "Erik F. Tjong Kim Sang",
+   "Fien De Meulder"
+  ],
+  "year": 2003,
+  "title": "Introduction to the CoNLL-2003 Shared Task: Language-Independent Named Entity Recognition",
+  "venue": "Proceedings of the Seventh Conference on Natural Language Learning at HLT-NAACL 2003, 142–147",
+  "url": "https://aclanthology.org/W03-0419/",
+  "paper": true
+ },
+ {
+  "key": "rajpurkar2016squad",
+  "authors": [
+   "Pranav Rajpurkar",
+   "Jian Zhang",
+   "Konstantin Lopyrev",
+   "Percy Liang"
+  ],
+  "year": 2016,
+  "title": "SQuAD: 100,000+ Questions for Machine Comprehension of Text",
+  "venue": "Proceedings of the 2016 Conference on Empirical Methods in Natural Language Processing (EMNLP), 2383–2392",
+  "url": "https://doi.org/10.18653/v1/D16-1264",
+  "paper": true
+ },
+ {
+  "key": "zhang2015agnews",
+  "authors": [
+   "Xiang Zhang",
+   "Junbo Zhao",
+   "Yann LeCun"
+  ],
+  "year": 2015,
+  "title": "Character-level Convolutional Networks for Text Classification",
+  "venue": "Advances in Neural Information Processing Systems 28 (NeurIPS), 649–657",
+  "url": "https://arxiv.org/abs/1509.01626",
+  "paper": true
+ },
+ {
+  "key": "narayan2018xsum",
+  "authors": [
+   "Shashi Narayan",
+   "Shay B. Cohen",
+   "Mirella Lapata"
+  ],
+  "year": 2018,
+  "title": "Don't Give Me the Details, Just the Summary! Topic-Aware Convolutional Neural Networks for Extreme Summarization",
+  "venue": "Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing (EMNLP), 1797–1807",
+  "url": "https://doi.org/10.18653/v1/D18-1206",
+  "paper": true
+ },
+ {
+  "key": "gliwa2019samsum",
+  "authors": [
+   "Bogdan Gliwa",
+   "Iwona Mochol",
+   "Maciej Biesek",
+   "Aleksander Wawer"
+  ],
+  "year": 2019,
+  "title": "SAMSum Corpus: A Human-annotated Dialogue Dataset for Abstractive Summarization",
+  "venue": "Proceedings of the 2nd Workshop on New Frontiers in Summarization, 70–79",
+  "url": "https://doi.org/10.18653/v1/D19-5409",
+  "paper": true
+ },
+ {
+  "key": "song2024sleb",
+  "authors": [
+   "Jiwon Song",
+   "Kyungseok Oh",
+   "Taesu Kim",
+   "Hyungjun Kim",
+   "Yulhwa Kim",
+   "Jae-Joon Kim"
+  ],
+  "year": 2024,
+  "title": "SLEB: Streamlining LLMs through Redundancy Verification and Elimination of Transformer Blocks",
+  "venue": "Proceedings of the 41st International Conference on Machine Learning (ICML)",
+  "url": "https://arxiv.org/abs/2402.09025",
+  "paper": true
+ },
+ {
+  "key": "ma2023llmpruner",
+  "authors": [
+   "Xinyin Ma",
+   "Gongfan Fang",
+   "Xinchao Wang"
+  ],
+  "year": 2023,
+  "title": "LLM-Pruner: On the Structural Pruning of Large Language Models",
+  "venue": "Advances in Neural Information Processing Systems 36 (NeurIPS)",
+  "url": "https://arxiv.org/abs/2305.11627",
+  "paper": true
+ },
+ {
+  "key": "pan2025adaptpruner",
+  "authors": [
+   "Rui Pan",
+   "Shivanshu Shekhar",
+   "Boyao Wang",
+   "Shizhe Diao",
+   "Jipeng Zhang",
+   "Xingyuan Pan",
+   "Renjie Pi",
+   "Tong Zhang"
+  ],
+  "year": 2025,
+  "title": "Adapt-Pruner: Adaptive Structural Pruning for Efficient Small Language Model Training",
+  "venue": "arXiv preprint 2502.03460",
+  "url": "https://arxiv.org/abs/2502.03460",
+  "paper": true
+ },
+ {
+  "key": "sieberling2025evopress",
+  "authors": [
+   "Oliver Sieberling",
+   "Denis Kuznedelev",
+   "Eldar Kurtic",
+   "Dan Alistarh"
+  ],
+  "year": 2025,
+  "title": "EvoPress: Accurate Dynamic Model Compression via Evolutionary Search",
+  "venue": "Proceedings of the 42nd International Conference on Machine Learning (ICML)",
+  "url": "https://arxiv.org/abs/2410.14649",
+  "paper": true
+ },
+ {
+  "key": "muralidharan2024minitron",
+  "authors": [
+   "Saurav Muralidharan",
+   "Sharath Turuvekere Sreenivas",
+   "Raviraj Joshi",
+   "Marcin Chochowski",
+   "Mostofa Patwary",
+   "Mohammad Shoeybi",
+   "Bryan Catanzaro",
+   "Jan Kautz",
+   "Pavlo Molchanov"
+  ],
+  "year": 2024,
+  "title": "Compact Language Models via Pruning and Knowledge Distillation",
+  "venue": "Advances in Neural Information Processing Systems 37 (NeurIPS)",
+  "url": "https://arxiv.org/abs/2407.14679",
+  "paper": true
+ },
+ {
+  "key": "diao2021heterofl",
+  "authors": [
+   "Enmao Diao",
+   "Jie Ding",
+   "Vahid Tarokh"
+  ],
+  "year": 2021,
+  "title": "HeteroFL: Computation and Communication Efficient Federated Learning for Heterogeneous Clients",
+  "venue": "International Conference on Learning Representations (ICLR)",
+  "url": "https://arxiv.org/abs/2010.01264",
+  "paper": true
+ },
+ {
+  "key": "wu2024fiarse",
+  "authors": [
+   "Feijie Wu",
+   "Xingchen Wang",
+   "Yaqing Wang",
+   "Tianci Liu",
+   "Lu Su",
+   "Jing Gao"
+  ],
+  "year": 2024,
+  "title": "FIARSE: Model-Heterogeneous Federated Learning via Importance-Aware Submodel Extraction",
+  "venue": "Advances in Neural Information Processing Systems 37 (NeurIPS)",
+  "url": "https://arxiv.org/abs/2407.19389",
+  "paper": true
+ },
+ {
+  "key": "alam2022fedrolex",
+  "authors": [
+   "Samiul Alam",
+   "Luyang Liu",
+   "Ming Yan",
+   "Mi Zhang"
+  ],
+  "year": 2022,
+  "title": "FedRolex: Model-Heterogeneous Federated Learning with Rolling Sub-Model Extraction",
+  "venue": "Advances in Neural Information Processing Systems 35 (NeurIPS)",
+  "url": "https://arxiv.org/abs/2212.01548",
+  "paper": true
+ },
+ {
+  "key": "yu2022gnnrl",
+  "authors": [
+   "Sixing Yu",
+   "Arya Mazaheri",
+   "Ali Jannesari"
+  ],
+  "year": 2022,
+  "title": "Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning",
+  "venue": "Proceedings of the 39th International Conference on Machine Learning (ICML), PMLR 162, 25656–25667",
+  "url": "https://proceedings.mlr.press/v162/yu22e.html",
+  "paper": true
+ },
+ {
+  "key": "velickovic2018gat",
+  "authors": [
+   "Petar Veličković",
+   "Guillem Cucurull",
+   "Arantxa Casanova",
+   "Adriana Romero",
+   "Pietro Liò",
+   "Yoshua Bengio"
+  ],
+  "year": 2018,
+  "title": "Graph Attention Networks",
+  "venue": "International Conference on Learning Representations (ICLR)",
+  "url": "https://arxiv.org/abs/1710.10903",
+  "paper": true
+ },
+ {
+  "key": "perez2018film",
+  "authors": [
+   "Ethan Perez",
+   "Florian Strub",
+   "Harm De Vries",
+   "Vincent Dumoulin",
+   "Aaron Courville"
+  ],
+  "year": 2018,
+  "title": "FiLM: Visual Reasoning with a General Conditioning Layer",
+  "venue": "Proceedings of the AAAI Conference on Artificial Intelligence 32",
+  "url": "https://doi.org/10.1609/aaai.v32i1.11671",
+  "paper": true
+ },
+ {
+  "key": "williams1992reinforce",
+  "authors": [
+   "Ronald J. Williams"
+  ],
+  "year": 1992,
+  "title": "Simple statistical gradient-following algorithms for connectionist reinforcement learning",
+  "venue": "Machine Learning 8, 229–256",
+  "url": "https://doi.org/10.1007/BF00992696",
+  "paper": false
+ },
+ {
+  "key": "michel2019heads",
+  "authors": [
+   "Paul Michel",
+   "Omer Levy",
+   "Graham Neubig"
+  ],
+  "year": 2019,
+  "title": "Are Sixteen Heads Really Better than One?",
+  "venue": "Advances in Neural Information Processing Systems 32 (NeurIPS)",
+  "url": "https://arxiv.org/abs/1905.10650",
+  "paper": false
+ }
+]

@@ -25,7 +25,12 @@
 
   <h2>The idea</h2>
   <p>A language model reads text as <span class="term">tokens</span>, short pieces of words. Every token costs computation. A client's <span class="term">budget</span> is the share of the full model's cost per token that the client can spend. A hospital with a server may afford most of the full cost. A clinic with a laptop may afford a small share.</p>
-  <p>Lesson 2 showed that federated averaging needs every client to hold the same model. So in plain federated learning, the shared model must be cheap enough for the client with the smallest budget. The other clients could run a larger, better model, but they do not get one.</p>
+  <p>Lesson 2 showed that federated averaging needs every client to hold the same model. So in plain federated learning, the shared model must be cheap enough for the client with the smallest budget<sup class="cite" data-refs="mcmahan2017">[<a href="#ref-mcmahan2017" id="cite-mcmahan2017">1</a>]</sup>. The other clients could run a larger, better model, but they do not get one.</p>
+
+  <figure class="anim" id="fig3">
+    <svg role="img" aria-label="One shared model shrinks to the smallest budget and leaves the larger budgets partly unused"></svg>
+    <figcaption>Live figure. One shared model for three budgets. It must shrink to the smallest budget, and the hatched part of each larger budget goes unused. Federated methods that give each client a slice of one model's width address part of this<sup class="cite" data-refs="diao2021heterofl,alam2022fedrolex">[<a href="#ref-diao2021heterofl" id="cite-diao2021heterofl">2</a>, <a href="#ref-alam2022fedrolex" id="cite-alam2022fedrolex">3</a>]</sup>.</figcaption>
+  </figure>
 
   <section class="card" aria-labelledby="try3">
     <h2 class="card-title" id="try3">Try it: one shared model for three budgets</h2>
@@ -90,11 +95,23 @@ for name, budget in budgets.items():
     <p>Clients differ in how much computation they can spend on each token. One shared model must fit the smallest budget, so the clients with larger budgets leave much of it unused. The answer of the FedBUD paper is to give each client its own sub-network, a part of one large model sized to the client's budget. An open question is how to choose that part for each client and how to train the different parts together without sharing data.</p>
   </section>
 
+<!-- refs:start -->
+  <section class="references" aria-labelledby="refs-h">
+    <h2 id="refs-h">References</h2>
+    <ol>
+      <li id="ref-mcmahan2017">H. Brendan McMahan et al. (2017). Communication-Efficient Learning of Deep Networks from Decentralized Data. <em>Proceedings of the 20th International Conference on Artificial Intelligence and Statistics (AISTATS), PMLR 54, 1273–1282</em>. <a href="https://proceedings.mlr.press/v54/mcmahan17a.html">PMLR</a> <a class="back" href="#cite-mcmahan2017" aria-label="Back to where reference 1 is cited">back</a></li>
+      <li id="ref-diao2021heterofl">Enmao Diao, Jie Ding and Vahid Tarokh (2021). HeteroFL: Computation and Communication Efficient Federated Learning for Heterogeneous Clients. <em>International Conference on Learning Representations (ICLR)</em>. <a href="https://arxiv.org/abs/2010.01264">arXiv</a> <a class="back" href="#cite-diao2021heterofl" aria-label="Back to where reference 2 is cited">back</a></li>
+      <li id="ref-alam2022fedrolex">Samiul Alam et al. (2022). FedRolex: Model-Heterogeneous Federated Learning with Rolling Sub-Model Extraction. <em>Advances in Neural Information Processing Systems 35 (NeurIPS)</em>. <a href="https://arxiv.org/abs/2212.01548">arXiv</a> <a class="back" href="#cite-alam2022fedrolex" aria-label="Back to where reference 3 is cited">back</a></li>
+    </ol>
+    <p class="note"><a href="../references.html">All references of the course</a></p>
+  </section>
+<!-- refs:end -->
   <nav class="lesson-nav" aria-label="Lessons">
     <a href="02-federated-learning.html">Previous: federated learning</a>
     <a href="04-decomposition.html">Next: the decomposition idea</a>
   </nav>
 </main>
 <script type="module" src="../assets/js/lesson03.js"></script>
+<script type="module" src="../assets/js/fig03.js"></script>
 </body>
 </html>

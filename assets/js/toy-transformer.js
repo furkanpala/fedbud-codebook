@@ -118,6 +118,18 @@ export async function trainToy({ seed = 3, steps = 300, onProgress = null, onNot
         return { heads: heads.map((v) => v / hs), neurons: neurons.map((v) => v / ns) };
       });
     },
+    /* The same head scores, but one value per example (before the layer normalization), so a figure can show how
+       the scores settle as more examples are read: the score on the first k examples is the mean of the first k. */
+    headScoresByExample(data) {
+      return T.tidy(() => {
+        const out = forward(p, data.x, ones.h, ones.n, true);
+        const B = data.x.shape[0];
+        return out.headOut.map((oh, i) => {
+          const norm = p.wo[i].square().sum().sqrt().dataSync()[0];
+          return Array.from(oh.abs().sum(1).reshape([B, L]).mean(1).dataSync()).map((v) => v * norm);
+        });
+      });
+    },
     dispose() {
       Object.values(p).flat().forEach((t) => t.dispose());
       test.x.dispose(); test.y.dispose();

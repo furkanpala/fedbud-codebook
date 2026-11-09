@@ -25,8 +25,13 @@
 
   <h2>The idea</h2>
   <p><span class="term">Federated learning (FL)</span> trains one model across many clients without moving their data. Training runs in <span class="term">rounds</span>, and every round has three steps.</p>
-  <p>First, the server sends the current shared model to every client. Then each client trains its copy for a few steps on its own data. Finally, the server averages the clients' copies into the next shared model. A client with more examples counts more in this average, a rule named <span class="term">federated averaging</span>.</p>
-  <p>Only the model's parameters travel between the clients and the server. The data stay where they are.</p>
+  <p>First, the server sends the current shared model to every client. Then each client trains its copy for a few steps on its own data. Finally, the server averages the clients' copies into the next shared model. A client with more examples counts more in this average, a rule named <span class="term">federated averaging</span><sup class="cite" data-refs="mcmahan2017">[<a href="#ref-mcmahan2017" id="cite-mcmahan2017">1</a>]</sup>.</p>
+  <p>Clients send only the model's parameters to the server and get the average back. The data stay where they are.</p>
+
+  <figure class="anim" id="fig2">
+    <svg role="img" aria-label="Five federated rounds: the shared model moves toward the weighted mean of the clients' copies"></svg>
+    <figcaption>Live figure. Five federated rounds of a toy model with two parameters. A cross marks each client's own best point, the black dot is the shared model and the dashed line its path. The shares 0.1, 0.3 and 0.6 are those of the Python cell below.</figcaption>
+  </figure>
 
   <section class="card" aria-labelledby="try2">
     <h2 class="card-title" id="try2">Try it: three clients learn one boundary</h2>
@@ -68,7 +73,7 @@
     </ul>
     <div class="btn-row"><button class="btn" type="button" data-check>Check</button><button class="btn secondary" type="button" data-reveal="a1">Show the result</button></div>
     <p class="feedback" aria-live="polite"></p>
-    <div class="answer" id="a1" tabindex="-1" hidden>The parameters. The server never sees a data point. This is why clinics and companies can take part without breaking privacy rules.</div>
+    <div class="answer" id="a1" tabindex="-1" hidden>The parameters. The server sees no data point. This is why clinics and companies can take part without breaking privacy rules.</div>
   </div>
 
   <div class="question" data-kind="number" data-answer="2.5" data-tol="0.01">
@@ -113,11 +118,21 @@ print("shared model:", shared_model)</textarea>
     <p>In federated learning, clients train copies of one model on their own data, and a server averages the copies every round. The clients learn together while their data stay private. Federated averaging has one requirement that matters for the rest of this course. Every client must hold the same model, so that the server can average the copies parameter by parameter.</p>
   </section>
 
+<!-- refs:start -->
+  <section class="references" aria-labelledby="refs-h">
+    <h2 id="refs-h">References</h2>
+    <ol>
+      <li id="ref-mcmahan2017">H. Brendan McMahan et al. (2017). Communication-Efficient Learning of Deep Networks from Decentralized Data. <em>Proceedings of the 20th International Conference on Artificial Intelligence and Statistics (AISTATS), PMLR 54, 1273–1282</em>. <a href="https://proceedings.mlr.press/v54/mcmahan17a.html">PMLR</a> <a class="back" href="#cite-mcmahan2017" aria-label="Back to where reference 1 is cited">back</a></li>
+    </ol>
+    <p class="note"><a href="../references.html">All references of the course</a></p>
+  </section>
+<!-- refs:end -->
   <nav class="lesson-nav" aria-label="Lessons">
     <a href="01-the-problem.html">Previous: the problem</a>
     <a href="03-one-size.html">Next: why one model does not fit all</a>
   </nav>
 </main>
 <script type="module" src="../assets/js/lesson02.js"></script>
+<script type="module" src="../assets/js/fig02.js"></script>
 </body>
 </html>
