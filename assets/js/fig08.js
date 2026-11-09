@@ -19,6 +19,13 @@ CLIENTS.forEach((c, k) => {
 });
 svgEl("text", { x: SX + SW / 2, y: 18, "text-anchor": "middle", style: "font-weight:700" }, svg).textContent = "Server";
 [...Array(HID)].forEach((_, r) => svgEl("rect", { x: SX, y: TOP + r * RH, width: SW, height: RH - 4, rx: 4, style: "fill:var(--color-code-bg);stroke:var(--color-border)" }, svg));
+// a faded copy stays in every client cell, so each client's neurons can be read in every state, also the final one
+CLIENTS.forEach((c, k) => {
+  KEPT[c].forEach((neuron, row) => {
+    svgEl("rect", { x: CX[k], y: TOP + row * RH, width: CW, height: RH - 4, rx: 4, style: `fill:${COL[k]};opacity:0.22` }, svg);
+    svgEl("text", { x: CX[k] + CW / 2, y: TOP + row * RH + 18, "text-anchor": "middle", style: "font-weight:700;fill:var(--color-text)" }, svg).textContent = `n${neuron + 1}`;
+  });
+});
 // one movable chip per (client, kept neuron)
 const chips = [];
 CLIENTS.forEach((c, k) => {
