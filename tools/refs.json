@@ -317,5 +317,37 @@
   "venue": "Advances in Neural Information Processing Systems 32 (NeurIPS)",
   "url": "https://arxiv.org/abs/1905.10650",
   "paper": false
+ },
+ {
+  "key": "wu2025fedpruner",
+  "authors": [
+   "Yebo Wu",
+   "Jingguang Li",
+   "Chunlin Tian",
+   "Zhijiang Guo",
+   "Li Li"
+  ],
+  "year": 2025,
+  "title": "Memory-Efficient Federated Fine-Tuning of Large Language Models via Layer Pruning",
+  "venue": "arXiv preprint 2508.17209",
+  "url": "https://arxiv.org/abs/2508.17209",
+  "paper": true
+ },
+ {
+  "key": "agarwal2024gkd",
+  "authors": [
+   "Rishabh Agarwal",
+   "Nino Vieillard",
+   "Yongchao Zhou",
+   "Piotr Stanczyk",
+   "Sabela Ramos",
+   "Matthieu Geist",
+   "Olivier Bachem"
+  ],
+  "year": 2024,
+  "title": "On-Policy Distillation of Language Models: Learning from Self-Generated Mistakes",
+  "venue": "International Conference on Learning Representations (ICLR)",
+  "url": "https://arxiv.org/abs/2306.13649",
+  "paper": true
  }
 ]

@@ -25,7 +25,7 @@ const nodes = SHORT.map((s, i) => {
 const msgs = edges.map(() => svgEl("circle", { r: 5, style: "fill:var(--color-accent)" }, svg));
 const film = svgEl("text", { x: 320, y: 128, "text-anchor": "middle", style: "font-weight:700;fill:var(--color-primary)" }, svg);
 // one layer's output as four bars, with the gate
-const BX = 100, BY = 250, BW = 90;
+const BX = 100, BY = 226, BW = 90;
 svgEl("line", { x1: 60, x2: 600, y1: BY, y2: BY, style: "stroke:var(--color-muted)" }, svg);
 const bars = OUT.map((_, j) => {
   const ghost = svgEl("rect", { x: BX + j * 120, width: BW, rx: 4, style: "fill:none;stroke:var(--color-muted);stroke-dasharray:4 3" }, svg);

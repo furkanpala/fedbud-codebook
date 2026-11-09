@@ -13,7 +13,7 @@ const defs = svgEl("defs", {}, svg);
 const pat = svgEl("pattern", { id: "hatch3", width: 8, height: 8, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" }, defs);
 svgEl("rect", { width: 8, height: 8, style: "fill:var(--color-accent-soft)" }, pat);
 svgEl("line", { x1: 0, y1: 0, x2: 0, y2: 8, style: "stroke:var(--color-accent);stroke-width:3" }, pat);
-const BASE = 250, H = 200, Y = (v) => BASE - v * H;
+const BASE = 232, H = 190, Y = (v) => BASE - v * H;
 svgEl("line", { x1: 30, x2: 620, y1: BASE, y2: BASE, style: "stroke:var(--color-muted)" }, svg);
 const cols = CL.map((c, i) => {
   const x = 70 + i * 190, w = 110;
@@ -21,9 +21,9 @@ const cols = CL.map((c, i) => {
   const unused = svgEl("rect", { x, y: Y(c.b), width: w, height: 0, style: "fill:url(#hatch3)" }, svg);
   const run = svgEl("rect", { x, y: BASE, width: w, height: 0, rx: 4 }, svg);
   svgEl("text", { x: x + w / 2, y: BASE + 20, "text-anchor": "middle", style: "font-weight:700" }, svg).textContent = c.name;
-  svgEl("text", { x: x + w / 2, y: Y(c.b) - 8, "text-anchor": "middle", style: "fill:var(--color-muted)" }, svg).textContent = `budget ${fmt(c.b, 1)}`;
-  const st = svgEl("text", { x: x + w / 2, y: BASE + 40, "text-anchor": "middle" }, svg);
-  const pct = svgEl("text", { x: x + w / 2, y: Y(c.b) + 20, "text-anchor": "middle", style: "font-weight:700;fill:var(--color-accent)" }, svg);
+  svgEl("text", { x: x + w / 2, y: BASE + 38, "text-anchor": "middle", style: "fill:var(--color-muted)" }, svg).textContent = `budget ${fmt(c.b, 1)}`;
+  const st = svgEl("text", { x: x + w / 2, y: BASE + 58, "text-anchor": "middle" }, svg);
+  const pct = svgEl("text", { x: x + w / 2, y: Y(c.b) + 20, "text-anchor": "middle", style: "font-weight:700;fill:var(--color-text)" }, svg);
   return { c, unused, run, st, pct, x, w };
 });
 const line = svgEl("line", { x1: 40, x2: 610, style: "stroke:var(--color-primary);stroke-width:3;stroke-dasharray:8 5" }, svg);

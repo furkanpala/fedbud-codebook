@@ -86,7 +86,7 @@ async function learnedPolicy(budget, seed, onIter = null) {
       for (let i = 0; i < P; i++) logit[i] += (0.3 / 8) * adv * (s.k[i] - sig(logit[i]));
     }
     if (onIter) onIter({ it, p: logit.map(sig), samples: samples.map((s) => ({ raw: s.raw, fixed: s.fixed, v: s.v })), bestVal });
-    if (it % 10 === 9) await new Promise((res) => setTimeout(res, 0));
+    if (onIter || it % 10 === 9) await new Promise((res) => setTimeout(res, 0));   // the figure's replay yields every iteration
   }
   // the most probable configuration, repaired, is checked against the best one found
   const top = repair(logit.map((z) => (sig(z) > 0.5 ? 1 : 0)), budget, logit.map(sig));

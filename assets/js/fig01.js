@@ -8,15 +8,16 @@ const CARDS = [{ name: "Laptop", gb: 8 }, { name: "Workstation", gb: 16 }, { nam
 const fig = document.getElementById("fig1");
 const svg = fig.querySelector("svg");
 svg.setAttribute("viewBox", "0 0 640 300");
-const TOP = 40, H = 180, BW = 46;
+const TOP = 40, H = 180, BW = 58, GAP = 18;
 const parts = CARDS.map((c, i) => {
   const x0 = 40 + i * 205;
-  svgEl("text", { x: x0 + 60, y: 22, "text-anchor": "middle", style: "font-weight:700" }, svg).textContent = `${c.name}, ${c.gb} GB`;
+  svgEl("text", { x: x0 + 8 + BW + GAP / 2, y: 22, "text-anchor": "middle", style: "font-weight:700" }, svg).textContent = `${c.name}, ${c.gb} GB`;
   const bars = ["run", "fine-tune"].map((label, j) => {
-    const x = x0 + 8 + j * (BW + 20);
+    const x = x0 + 8 + j * (BW + GAP);
     svgEl("rect", { x, y: TOP, width: BW, height: H, rx: 6, style: "fill:var(--color-code-bg);stroke:var(--color-border)" }, svg);
     const fill = svgEl("rect", { x, y: TOP + H, width: BW, height: 0, rx: 6 }, svg);
-    const over = svgEl("text", { x: x + BW / 2, y: TOP + 16, "text-anchor": "middle", style: "font-weight:700;fill:var(--color-bad)" }, svg);
+    // inside the full red bar, in white, so it reads on the bar and cannot meet the label of the other bar
+    const over = svgEl("text", { x: x + BW / 2, y: TOP + 20, "text-anchor": "middle", style: "font-weight:700;font-size:14px;fill:#ffffff" }, svg);
     svgEl("text", { x: x + BW / 2, y: TOP + H + 20, "text-anchor": "middle" }, svg).textContent = label;
     const val = svgEl("text", { x: x + BW / 2, y: TOP + H + 40, "text-anchor": "middle", style: "fill:var(--color-muted)" }, svg);
     return { fill, over, val };
@@ -38,11 +39,11 @@ function draw(pos) {
       fill.setAttribute("y", TOP + H - h);
       fill.setAttribute("height", h);
       fill.setAttribute("style", `fill:${fits ? (j ? "var(--color-primary)" : "var(--client-3)") : "var(--color-bad)"}`);
-      over.textContent = fits ? "" : "does not fit";
+      over.textContent = fits ? "" : "too big";
       val.textContent = `${fmt(need, need < 10 ? 1 : 0)} GB`;
     });
   }
-  sizeLabel.textContent = `Model of ${fmt(b, b < 1 ? 1 : 1)} billion parameters`;
+  sizeLabel.textContent = `Model of ${fmt(b, 1)} billion parameters`;
 }
 function summary(i) {
   const b = SIZES[i];

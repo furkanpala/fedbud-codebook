@@ -44,12 +44,8 @@ function draw(pos) {
   edges.forEach((ed) => {
     const a = ease(clamp01(pos - ed.to));
     ed.e.setAttribute("stroke-dashoffset", `${ed.len * (1 - a)}`);
-    const dropA = ease(clamp01(pos - N - 1));
-    const bypass = ed.skip && ed.from === 4 && ed.to === 6;      // F2 -> F3 skips the dropped A3
-    const touchesDrop = ed.from === 5 || ed.to === 5;
     let style = "fill:none;stroke:var(--color-muted);stroke-width:2";
-    if (bypass && dropA > 0.5) style = "fill:none;stroke:var(--color-accent);stroke-width:4";
-    else if (touchesDrop && dropA > 0.5) style = "fill:none;stroke:var(--color-border);stroke-width:2";
+    // the edges stay as they are: a dropped block changes the node, not the graph
     ed.e.setAttribute("style", style);
   });
 }
@@ -57,6 +53,6 @@ function summary(i) {
   if (i === 0) return "An empty graph. Nodes will appear in the order in which the model computes.";
   if (i <= N) return `Node ${i} of ${N}: ${NODES[i - 1]}${i > 1 ? ", joined to the node before it" + (i > 2 ? " and to the node two places back" : "") : ""}.`;
   if (i === N + 1) return "Every block gets an action: keep, half, quarter or drop. The embedding and the output head are always kept.";
-  return "Attention block 3 is dropped. The model skips it, and the edge from feed-forward 2 to feed-forward 3 carries the input past it.";
+  return "Attention block 3 is dropped. The model skips it, so its input passes on unchanged. The graph keeps all its edges.";
 }
 mountAnimation(fig, { n: NS, draw, summary, duration: (i) => (i < N ? 600 : 1400) });

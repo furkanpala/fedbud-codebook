@@ -14,6 +14,7 @@ REFS = {r["key"]: r for r in json.loads((ROOT / "tools" / "refs.json").read_text
 MARK = re.compile(r'<sup class="cite" data-refs="([^"]+)">.*?</sup>', re.S)
 BLOCK = re.compile(r"\n?<!-- refs:start -->.*?<!-- refs:end -->\n?", re.S)
 esc = html.escape
+ORIGIN = ' <span class="ref-origin">added by the course</span>'
 
 
 def short_authors(a):
@@ -33,7 +34,8 @@ def full_authors(a):
 def entry(r, authors):
     link = r["url"]
     label = "doi.org" if "doi.org" in link else ("arXiv" if "arxiv.org" in link else ("ACL Anthology" if "aclanthology" in link else "PMLR"))
-    return (f"{esc(authors(r['authors']))} ({r['year']}). {esc(r['title'])}. <em>{esc(r['venue'])}</em>. "
+    stop = "" if r["title"].rstrip()[-1:] in "?!" else "."
+    return (f"{esc(authors(r['authors']))} ({r['year']}). {esc(r['title'])}{stop} <em>{esc(r['venue'])}</em>. "
             f'<a href="{esc(link)}">{label}</a>')
 
 
@@ -83,7 +85,7 @@ def build_all_page(used):
     rows = sorted((r for r in REFS.values() if r["key"] in used), key=lambda r: (surname(r).lower(), r["year"]))
     lis = "\n".join(
         f'    <li id="ref-{r["key"]}">{entry(r, full_authors)}'
-        f'{"" if r["paper"] else " <span class=ref-origin>added by the course</span>"}</li>' for r in rows)
+        f'{"" if r["paper"] else ORIGIN}</li>' for r in rows)
     t = (ROOT / "references.html").read_text(encoding="utf-8") if (ROOT / "references.html").exists() else None
     page = f"""<!doctype html>
 <html lang="en">

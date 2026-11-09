@@ -24,10 +24,10 @@ async function start(toy) {
     const x = 20 + i * bw;
     svgEl("rect", { x: x + 2, y: 40, width: bw - 4, height: 110, rx: 3, style: "fill:var(--color-code-bg)" }, svg);
     const r = svgEl("rect", { x: x + 2, y: 150, width: bw - 4, height: 0, rx: 3, style: `fill:${i < H ? "var(--client-1)" : "var(--client-3)"}` }, svg);
-    svgEl("text", { x: x + bw / 2, y: 168, "text-anchor": "middle", style: "font-size:12px" }, svg).textContent = i < H ? `H${i + 1}` : `${i - H + 1}`;
+    svgEl("text", { x: x + bw / 2, y: 168, "text-anchor": "middle", style: "font-size:14px" }, svg).textContent = i < H ? `H${i + 1}` : `${i - H + 1}`;
     return r;
   });
-  svgEl("text", { x: 20, y: 186, style: "fill:var(--color-muted);font-size:13px" }, svg).textContent = "H = head, numbers = feed-forward neurons";
+  svgEl("text", { x: 20, y: 186, style: "fill:var(--color-muted);font-size:14px" }, svg).textContent = "H = head, numbers = feed-forward neurons";
   // cost axis with the budget line
   const AX = 20, AW = 600, AY = 240, CX = (c) => AX + c * AW;
   svgEl("line", { x1: AX, x2: AX + AW, y1: AY, y2: AY, style: "stroke:var(--color-muted)" }, svg);
@@ -68,5 +68,12 @@ async function start(toy) {
   mountAnimation(fig, { n: ITERS + 1, draw, summary, duration: 450 });
 }
 
-if (window.__toy7) start(window.__toy7);
-else window.addEventListener("toy7-ready", () => start(window.__toy7), { once: true });
+// record the search only when the figure first comes into view, so it costs nothing to a reader who does not scroll there
+function whenVisible(go) {
+  if (!("IntersectionObserver" in window)) return go();
+  const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); go(); } }, { threshold: 0.1 });
+  io.observe(fig);
+}
+const ready = () => whenVisible(() => start(window.__toy7));
+if (window.__toy7) ready();
+else window.addEventListener("toy7-ready", ready, { once: true });

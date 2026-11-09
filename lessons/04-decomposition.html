@@ -28,7 +28,7 @@
   <p>Every head and every neuron costs computation for each token. If a client drops some heads and some neurons, the remaining model is cheaper<sup class="cite" data-refs="ma2023llmpruner,song2024sleb,sieberling2025evopress">[<a href="#ref-ma2023llmpruner" id="cite-ma2023llmpruner">2</a>, <a href="#ref-song2024sleb" id="cite-song2024sleb">3</a>, <a href="#ref-sieberling2025evopress" id="cite-sieberling2025evopress">4</a>]</sup>. The remaining model is the client's <span class="term">sub-network</span>. Cutting one large model into one sub-network per client is <span class="term">decomposition</span>, the idea of this course. The hard part is to drop parts so that the sub-network still works well. The paper cuts in steps. For each attention block it keeps all or half of the heads, or drops the block. For each feed-forward block it keeps all, half or a quarter of the neurons, or drops the block. Inside a block it keeps the heads and neurons with the highest importance scores, which Lesson 6 explains.</p>
 
   <figure class="anim" id="fig4">
-    <svg role="img" aria-label="The toy layer loses heads and neurons block by block, and its cost falls to 8 percent"></svg>
+    <svg role="img" aria-label="The toy layer loses heads and neurons block by block, and its cost falls to a third"></svg>
     <figcaption>Live figure. The toy layer of this lesson loses parts block by block, with the actions of the paper. Inside a block the order uses toy scores, and Lesson 6 computes real ones.</figcaption>
   </figure>
 

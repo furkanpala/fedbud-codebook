@@ -30,7 +30,7 @@ export const clamp01 = (t) => Math.max(0, Math.min(1, t));
 export function mountAnimation(fig, spec) {
   const n = spec.n;
   const durationOf = (i) => (typeof spec.duration === "function" ? spec.duration(i) : spec.duration || 1100);
-  let pos = 0, playing = false, speed = 1, raf = 0, last = 0, autoplayed = false, lastAnnounced = -1;
+  let pos = 0, playing = false, speed = 1, raf = 0, last = 0, autoplayed = false, lastAnnounced = -1, pausedByView = false;
 
   // on a narrow screen the drawing keeps a readable size and scrolls sideways inside its own box
   const svgNode = fig.querySelector("svg");
@@ -39,12 +39,25 @@ export function mountAnimation(fig, spec) {
     wrap.className = "anim-canvas";
     svgNode.parentNode.insertBefore(wrap, svgNode);
     wrap.appendChild(svgNode);
+    const vb = svgNode.viewBox && svgNode.viewBox.baseVal;
+    if (vb && vb.width) svgNode.style.minWidth = Math.round(vb.width * (spec.minScale || 0.875)) + "px";
+    // a visible cue when the drawing is wider than the screen: a word above it and a fading right edge
+    const hint = document.createElement("p");
+    hint.className = "anim-scroll-hint";
+    hint.textContent = "Scroll the figure sideways →";
+    hint.hidden = true;
+    wrap.parentNode.insertBefore(hint, wrap);
     const focusIfScrolls = () => {
-      if (wrap.scrollWidth > wrap.clientWidth + 1) { wrap.tabIndex = 0; wrap.setAttribute("role", "region"); wrap.setAttribute("aria-label", "Figure, scroll sideways to see all of it"); }
+      const scrolls = wrap.scrollWidth > wrap.clientWidth + 1;
+      hint.hidden = !scrolls;
+      wrap.classList.toggle("scrolls", scrolls);
+      wrap.classList.toggle("at-end", wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 2);
+      if (scrolls) { wrap.tabIndex = 0; wrap.setAttribute("role", "region"); wrap.setAttribute("aria-label", "Figure, scroll sideways to see all of it"); }
       else { wrap.removeAttribute("tabindex"); wrap.removeAttribute("role"); wrap.removeAttribute("aria-label"); }
     };
     focusIfScrolls();
     window.addEventListener("resize", focusIfScrolls);
+    wrap.addEventListener("scroll", focusIfScrolls, { passive: true });
   }
   const bar = document.createElement("div");
   bar.className = "anim-controls";
@@ -75,7 +88,7 @@ export function mountAnimation(fig, spec) {
   }
   function tick(ts) {
     if (!playing) return;
-    // the first frame's timestamp can be a little earlier than the press of Play, so the time step is never negative
+    // the first frame's timestamp can be a little earlier than the press of Play, so the time step is clamped at zero
     const dt = Math.max(0, Math.min(ts - last, 100));
     last = ts;
     const i = Math.floor(pos);
@@ -103,6 +116,7 @@ export function mountAnimation(fig, spec) {
     playBtn.textContent = pos >= n - 1 ? "Replay" : "Play";
   }
   function restart() {
+    lastAnnounced = -1;            // the figure's data may have changed (client or mode), so announce state 0 again
     const was = playing;
     setPlaying(false);
     pos = 0; paint(); announce(0);
@@ -110,9 +124,12 @@ export function mountAnimation(fig, spec) {
     else playBtn.textContent = "Play";
   }
 
-  playBtn.addEventListener("click", () => (playing ? setPlaying(false) : play()));
-  bar.querySelector('[data-anim="step"]').addEventListener("click", step);
-  bar.querySelector('[data-anim="restart"]').addEventListener("click", restart);
+  // once a student uses a control, the figure no longer starts by itself
+  bar.addEventListener("click", (e) => { if (e.target.closest("button")) autoplayed = true; });
+  fig.addEventListener("click", (e) => { if (e.target.closest("button") && !bar.contains(e.target)) autoplayed = true; });
+  playBtn.addEventListener("click", () => { pausedByView = false; playing ? setPlaying(false) : play(); });
+  bar.querySelector('[data-anim="step"]').addEventListener("click", () => { pausedByView = false; step(); });
+  bar.querySelector('[data-anim="restart"]').addEventListener("click", () => { pausedByView = false; restart(); });
   bar.querySelector('[data-anim="speed"]').addEventListener("change", (e) => { speed = Number(e.target.value); });
   document.addEventListener("visibilitychange", () => { if (document.hidden && playing) setPlaying(false); });
 
@@ -123,7 +140,8 @@ export function mountAnimation(fig, spec) {
     new IntersectionObserver((entries) => {
       for (const en of entries) {
         if (en.isIntersecting && !autoplayed && !reduceQuery.matches) { autoplayed = true; play(); }
-        else if (!en.isIntersecting && playing) setPlaying(false);
+        else if (en.isIntersecting && pausedByView) { pausedByView = false; setPlaying(true); }   // resume on return
+        else if (!en.isIntersecting && playing) { pausedByView = true; setPlaying(false); }
       }
     }, { threshold: 0.5 }).observe(fig);
   }

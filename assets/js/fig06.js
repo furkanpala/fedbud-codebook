@@ -30,7 +30,7 @@ function start({ model, data }) {
   const bars = [...Array(HEADS)].map((_, i) => {
     const x = 60 + i * 140;
     const r = svgEl("rect", { x, y: BASE, width: 90, height: 0, rx: 6, style: "fill:var(--client-1)" }, svg);
-    const v = svgEl("text", { x: x + 45, y: BASE - 8, "text-anchor": "middle", style: "font-weight:700" }, svg);
+    const v = svgEl("text", { x: x + 45, y: BASE - 6, "text-anchor": "middle", style: "font-weight:700" }, svg);
     svgEl("text", { x: x + 45, y: BASE + 22, "text-anchor": "middle" }, svg).textContent = `head ${i + 1}`;
     return { r, v };
   });
@@ -51,6 +51,7 @@ function start({ model, data }) {
       const v = k >= K ? a[i] : lerp(a[i], b[i], t);
       const h = v * TOPH / 0.6;
       bar.r.setAttribute("y", BASE - h); bar.r.setAttribute("height", h);
+      bar.v.setAttribute("y", BASE - h - 6);
       bar.v.textContent = fmt(v, 2);
     });
     lab.textContent = `Client ${client}: scores after ${k} of ${K} examples`;

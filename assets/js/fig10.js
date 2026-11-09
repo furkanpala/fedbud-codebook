@@ -21,19 +21,19 @@ const panels = D.map((d, i) => {
   const g = svgEl("g", { transform: `translate(${x0},${y0})` }, svg);
   svgEl("rect", { width: PW, height: PH + 18, rx: 8, style: "fill:var(--color-code-bg)" }, g);
   svgEl("text", { x: 10, y: 20, style: "font-weight:700" }, g).textContent = d[0];
-  svgEl("text", { x: 10, y: 38, style: "fill:var(--color-muted);font-size:13px" }, g).textContent = d[1];
+  svgEl("text", { x: 10, y: 38, style: "fill:var(--color-muted);font-size:14px" }, g).textContent = d[1];
   const lo = Math.min(d[3] - d[4], d[5] - d[6]), hi = Math.max(d[3] + d[4], d[5] + d[6]), pad = (hi - lo) * 0.25;
-  const Y = (v) => 50 + (PH - 60) * (1 - (v - (lo - pad)) / (hi - lo + 2 * pad));
+  const Y = (v) => 66 + (PH - 78) * (1 - (v - (lo - pad)) / (hi - lo + 2 * pad));   // plot below the three text lines
   const XA = 60, XF = 140;
   const wa = svgEl("line", { x1: XA, x2: XA, y1: Y(d[3] - d[4]), y2: Y(d[3] + d[4]), style: "stroke:var(--color-muted);stroke-width:2" }, g);
   const pa = svgEl("circle", { cx: XA, cy: Y(d[3]), r: 5, style: "fill:var(--color-muted)" }, g);
   const arrow = svgEl("line", { x1: XA + 8, y1: Y(d[3]), style: "stroke:var(--color-primary);stroke-width:2" }, g);
   const wf = svgEl("line", { x1: XF, x2: XF, style: "stroke:var(--color-primary);stroke-width:2" }, g);
   const pf = svgEl("circle", { cx: XF, r: 5, style: "fill:var(--color-primary)" }, g);
-  svgEl("text", { x: XA, y: PH + 12, "text-anchor": "middle", style: "font-size:13px" }, g).textContent = "alone";
-  svgEl("text", { x: XF, y: PH + 12, "text-anchor": "middle", style: "font-size:13px" }, g).textContent = "FedBUD";
-  const val = svgEl("text", { x: PW - 8, y: 20, "text-anchor": "end", style: "font-weight:700;font-size:13px" }, g);
-  const sig = svgEl("text", { x: PW - 8, y: 38, "text-anchor": "end", style: "font-size:13px;fill:var(--color-good);font-weight:700" }, g);
+  svgEl("text", { x: XA, y: PH + 12, "text-anchor": "middle", style: "font-size:14px" }, g).textContent = "alone";
+  svgEl("text", { x: XF, y: PH + 12, "text-anchor": "middle", style: "font-size:14px" }, g).textContent = "FedBUD";
+  const val = svgEl("text", { x: PW - 8, y: 20, "text-anchor": "end", style: "font-weight:700;font-size:14px" }, g);
+  const sig = svgEl("text", { x: PW - 8, y: 56, "text-anchor": "end", style: "font-size:14px;fill:var(--color-good);font-weight:700" }, g);
   return { d, Y, XA, XF, wa, pa, arrow, wf, pf, val, sig, g };
 });
 function draw(pos) {

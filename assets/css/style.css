@@ -218,8 +218,10 @@ select.select { font: inherit; min-height: 44px; padding: 0 var(--space-2); bord
 /* ---------- live figures (assets/js/anim.js) ---------- */
 figure.anim { background: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius); padding: var(--space-3); }
 figure.anim svg { width: 100%; height: auto; display: block; }
-.anim-canvas { overflow-x: auto; }
-.anim-canvas svg { min-width: 560px; }
+.anim-canvas { overflow-x: auto; position: relative; }
+.anim-canvas.scrolls:not(.at-end) { -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); }
+.anim-scroll-hint { margin: 0 0 var(--space-2); font-size: 0.9rem; font-weight: 700; color: var(--color-muted); }
+.anim-scroll-hint[hidden] { display: none; }
 figure.anim svg text { font-family: var(--font-body); font-size: 15px; fill: var(--color-text); }
 .anim-controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-3); }
 .anim-controls .btn { min-width: 5.5rem; }

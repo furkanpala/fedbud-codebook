@@ -42,7 +42,8 @@ BEST.forEach((b, k) => {
   const [x, y] = P(b);
   svgEl("path", { d: `M${x - 7},${y - 7}L${x + 7},${y + 7}M${x - 7},${y + 7}L${x + 7},${y - 7}`, style: `stroke:${COLORS[k]};stroke-width:3` }, svg);
 });
-const track = svgEl("polyline", { style: "fill:none;stroke:var(--color-text);stroke-width:2;stroke-dasharray:4 4" }, svg);
+const track = svgEl("polyline", { style: "fill:none;stroke:var(--color-text);stroke-width:3;stroke-dasharray:5 4" }, svg);
+const roundDots = rounds.map(() => svgEl("circle", { r: 4, style: "fill:var(--color-text)" }, svg));
 const copyDots = BEST.map((b, k) => svgEl("circle", { r: 6, style: `fill:${COLORS[k]};opacity:0.85` }, svg));
 const sharedDot = svgEl("circle", { r: 9, style: "fill:var(--color-text)" }, svg);
 const label = svgEl("text", { x: PX + 10, y: PY + 20, style: "font-weight:700" }, svg);
@@ -73,6 +74,11 @@ function draw(pos) {
   const [sx, sy] = P(cur);
   sharedDot.setAttribute("cx", sx); sharedDot.setAttribute("cy", sy);
   track.setAttribute("points", [...pts, [sx, sy]].map((p) => p.join(",")).join(" "));
+  roundDots.forEach((d, q) => {
+    const done = q < r || (q === r && ph === 3 && t >= 1);
+    const [x, y] = P(rounds[q].after);
+    d.setAttribute("cx", x); d.setAttribute("cy", y); d.setAttribute("opacity", done ? 1 : 0);
+  });
   label.textContent = `Round ${r + 1} of ${ROUNDS}`;
 }
 function summary(i) {
