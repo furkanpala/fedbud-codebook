@@ -46,4 +46,4 @@ assets/js/lessonNN.js      the interactive part of each lesson
 
 ## Open items before publishing
 
-- Paper link, authors and license: to be decided by the authors (the index has a placeholder).
+- License: MIT (see LICENSE). The paper link and the author list are added when the paper's review ends.
